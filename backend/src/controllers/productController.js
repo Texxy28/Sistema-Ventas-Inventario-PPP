@@ -2,7 +2,7 @@ import pool from "../config/db.js";
 
 export const getAllProducts = async (req, res) => {
   try {
-    const result = await pool.query("select * from productos");
+    const result = await pool.query("select * from productos order by id_producto");
     res.json(result.rows);
   } catch (err) {
     console.error("Error al obtener productos", err);
@@ -129,7 +129,7 @@ export const updateProduct = async (req, res) => {
       );
     }
     res.status(200).json({ message: "Producto actualizado", producto: nuevoProducto });
-  } catch (err) {
+  } catch (err) { 
     console.error("Error al actualizar el producto", err);
     res.status(500).json({ error: "Error en el servidor" });
   }
