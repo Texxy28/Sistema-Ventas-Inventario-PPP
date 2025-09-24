@@ -4,22 +4,22 @@ import { addProduct, deleteProduct, getProducts, updateProduct } from "../servic
 export const useProductStore = defineStore("products", {
   state: () => ({
     products: [],
-    loading: false,
-    error: null,
+    loadingProducts: false,
+    errorProducts: null,
   }),
 
   actions: {
     async fetchProducts() {
-      this.loading = true;
-      this.error = null;
+      this.loadingProducts = true;
+      this.errorProducts = null;
       try {
         const response = await getProducts();
         this.products = response.data;
       } catch (err) {
-        this.error = "No se pudieron cargar los productos";
+        this.errorProducts = "No se pudieron cargar los productos";
         console.error(err);
       } finally {
-        this.loading = false;
+        this.loadingProducts = false;
       }
     },
     async addProduct(newProduct) {
@@ -27,19 +27,19 @@ export const useProductStore = defineStore("products", {
         await addProduct(newProduct);
         this.products.push(newProduct);
       } catch (err) {
-        this.error = "No se pudo agregar el producto";
+        this.errorProducts = "No se pudo agregar el producto";
         console.error(err);
       }
     },
     async updateProduct(id, updatedProduct) {
       try {
-        await updateProduct(id, updatedProduct);
+        const res = await updateProduct(id, updatedProduct);
         const index = this.products.findIndex((product) => product.id_producto === id);
         if (index !== -1) {
-          this.products[index] = { ...this.products[index], ...updatedProduct };
+          this.products[index] = res.data.producto;
         }
       } catch (err) {
-        this.error = "No se pudo actualizar el producto";
+        this.errorProducts = "No se pudo actualizar el producto";
         console.error(err);
       }
     },
@@ -50,7 +50,7 @@ export const useProductStore = defineStore("products", {
           (product) => product.id_producto !== id
         );
       } catch (err) {
-        this.error = "No se pudo eliminar el producto";
+        this.errorProducts = "No se pudo eliminar el producto";
         console.error(err);
       }
     },

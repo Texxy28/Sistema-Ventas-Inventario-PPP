@@ -2,7 +2,17 @@ import pool from "../config/db.js";
 
 export const getAllProducts = async (req, res) => {
   try {
-    const result = await pool.query("select * from productos order by id_producto");
+    const result = await pool.query(
+      `select 
+      p.id_producto, p.codigo, p.nombre, p.autor, p.descripcion, 
+      p.id_categoria, c.nombre as categoria,
+      p.id_proveedor, pr.nombre as proveedor, p.precio, p.stock, p.punto_reorden, 
+      p.fecha_creacion, p.fecha_actualizacion
+      from productos p
+      left join categorias c on p.id_categoria = c.id_categoria 
+      left join proveedores pr on p.id_proveedor = pr.id_proveedor
+      order by id_producto`
+    );
     res.json(result.rows);
   } catch (err) {
     console.error("Error al obtener productos", err);
@@ -45,14 +55,27 @@ export const addProduct = async (req, res) => {
 
     if (stock > 0) {
       await pool.query(
-        `INSERT INTO movimientos_inventario 
+        `insert into movimientos_inventario 
           (id_producto, tipo_movimiento, cantidad, usuario_responsable, nota)
-         VALUES ($1, 'entrada', $2, $3, 'Ingreso inicial de stock')`,
+         values ($1, 'entrada', $2, $3, 'Ingreso inicial de stock')`,
         [nuevoProducto.id_producto, stock, usuario_responsable || null]
       );
     }
 
-    res.status(201).json({ message: "Producto añadido", producto: result.rows[0] });
+    const detalles = await pool.query(
+      `select 
+      p.id_producto, p.codigo, p.nombre, p.autor, p.descripcion, 
+      p.id_categoria, c.nombre as categoria,
+      p.id_proveedor, pr.nombre as proveedor, p.precio, p.stock, p.punto_reorden, 
+      p.fecha_creacion, p.fecha_actualizacion
+      from productos p
+      left join categorias c on p.id_categoria = c.id_categoria 
+      left join proveedores pr on p.id_proveedor = pr.id_proveedor
+      where p.id_producto = $1`,
+      [nuevoProducto.id_producto]
+    );
+
+    res.status(201).json({ message: "Producto añadido", producto: detalles.rows[0] });
   } catch (err) {
     console.error("Error al obtener productos", err);
     res.status(500).json({ error: "Error en el servidor" });
@@ -128,7 +151,21 @@ export const updateProduct = async (req, res) => {
         ]
       );
     }
-    res.status(200).json({ message: "Producto actualizado", producto: nuevoProducto });
+
+    const detalles = await pool.query(
+      `select 
+      p.id_producto, p.codigo, p.nombre, p.autor, p.descripcion, 
+      p.id_categoria, c.nombre as categoria,
+      p.id_proveedor, pr.nombre as proveedor, p.precio, p.stock, p.punto_reorden, 
+      p.fecha_creacion, p.fecha_actualizacion
+      from productos p
+      left join categorias c on p.id_categoria = c.id_categoria 
+      left join proveedores pr on p.id_proveedor = pr.id_proveedor
+      where p.id_producto = $1`,
+      [nuevoProducto.id_producto]
+    );
+
+    res.status(200).json({ message: "Producto actualizado", producto: detalles.rows[0] });
   } catch (err) { 
     console.error("Error al actualizar el producto", err);
     res.status(500).json({ error: "Error en el servidor" });

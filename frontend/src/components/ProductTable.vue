@@ -50,8 +50,8 @@ const handleDelete = async (id) => {
                     <td class="border px-4 py-2">{{ product.nombre }}</td>
                     <td class="border px-4 py-2">{{ product.autor || "Sin autor" }}</td>
                     <td class="border px-4 py-2">{{ product.descripcion }}</td>
-                    <td class="border px-4 py-2">{{ product.id_categoria }}</td>
-                    <td class="border px-4 py-2">{{ product.id_proveedor }}</td>
+                    <td class="border px-4 py-2">{{ product.categoria }}</td>
+                    <td class="border px-4 py-2">{{ product.proveedor }}</td>
                     <td class="border px-4 py-2">{{ product.precio }}</td>
                     <td class="border px-4 py-2">{{ product.stock }}</td>
                     <td class="border px-4 py-2">

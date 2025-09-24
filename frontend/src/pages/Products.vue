@@ -3,10 +3,14 @@ import { storeToRefs } from 'pinia';
 import { useProductStore } from '../store/productsStore';
 import ProductTable from '../components/ProductTable.vue';
 import { ref } from 'vue';
+import { useCategoryStore } from '../store/categoriesStore';
 
 const productStore = useProductStore();
-const { products, loading, error } = storeToRefs(productStore);
+const categoryStore = useCategoryStore();
+const { products, loadingProducts, errorProducts } = storeToRefs(productStore);
+const { categories, loadingCategories, errorCategories } = storeToRefs(categoryStore);
 const { fetchProducts, updateProduct, addProduct } = productStore;
+const { fetchCategories } = categoryStore;
 
 const editedProduct = ref(null);
 const newProduct = ref({
@@ -23,7 +27,8 @@ const newProduct = ref({
 
 const addModal = ref(false);
 
-const openEditModal = (product) => {
+const openEditModal = async (product) => {
+    await fetchCategories();
     editedProduct.value = { ...product };
 }
 
@@ -32,7 +37,8 @@ const saveEdit = async () => {
     editedProduct.value = null;
 };
 
-const handleAddModal = () => {
+const handleAddModal = async () => {
+    await fetchCategories();
     addModal.value = true;
 }
 
@@ -64,10 +70,10 @@ const handleAddProduct = async () => {
             </div>
         </div>
         <div class="flex justify-center">
-            <div v-if="loading">Cargando...</div>
-            <ProductTable v-if="products.length && !loading" :products="products" @edit="openEditModal" />
+            <div v-if="loadingProducts">Cargando...</div>
+            <ProductTable v-if="products.length && !loadingProducts" :products="products" @edit="openEditModal" />
         </div>
-        <div v-if="error">{{ error }}</div>
+        <div v-if="errorProducts">{{ errorProducts }}</div>
     </div>
 
     <div v-if="editedProduct" class="fixed inset-0 bg-black/50 flex justify-center items-center">
@@ -76,7 +82,16 @@ const handleAddProduct = async () => {
             <input v-model="editedProduct.nombre" placeholder="Nombre" class="border p-2 w-full mb-2" />
             <input v-model="editedProduct.autor" placeholder="Autor" class="border p-2 w-full mb-2" />
             <input v-model="editedProduct.descripcion" placeholder="Descripcion" class="border p-2 w-full mb-2" />
-            <input v-model="editedProduct.id_categoria" placeholder="Categoria" class="border p-2 w-full mb-2" />
+            <div>
+                <select v-model="editedProduct.id_categoria" class="border p-2 w-full mb-2">
+                    <option disabled value="">Seleccione una categoría</option>
+                    <option v-for="category in categories" :key="category.id_categoria" :value="category.id_categoria">
+                        {{ category.nombre }}
+                    </option>
+                </select>
+                <div v-if="loadingCategories">Cargando categorías...</div>
+                <div v-if="errorCategories">{{ errorCategories }}</div>
+            </div>
             <input v-model="editedProduct.id_proveedor" placeholder="Proveedor" class="border p-2 w-full mb-2" />
             <input v-model="editedProduct.precio" type="number" placeholder="Precio" class="border p-2 w-full mb-2" />
             <input v-model="editedProduct.stock" type="number" placeholder="Stock" class="border p-2 w-full mb-4" />
@@ -94,8 +109,16 @@ const handleAddProduct = async () => {
             <input v-model="newProduct.nombre" placeholder="Nombre" class="border p-2 w-full mb-2" />
             <input v-model="newProduct.autor" placeholder="Autor" class="border p-2 w-full mb-2" />
             <input v-model="newProduct.descripcion" placeholder="Descripcion" class="border p-2 w-full mb-2" />
-            <input v-model="newProduct.id_categoria" type="number" placeholder="Categoria"
-                class="border p-2 w-full mb-2" />
+            <div>
+                <select v-model="newProduct.id_categoria" class="border p-2 w-full mb-2">
+                    <option disabled value="">Seleccione una categoría</option>
+                    <option v-for="category in categories" :key="category.id_categoria" :value="category.id_categoria">
+                        {{ category.nombre }}
+                    </option>
+                </select>
+                <div v-if="loadingCategories">Cargando categorías...</div>
+                <div v-if="errorCategories">{{ errorCategories }}</div>
+            </div>
             <input v-model="newProduct.id_proveedor" type="number" placeholder="Proveedor"
                 class="border p-2 w-full mb-2" />
             <input v-model="newProduct.precio" type="number" placeholder="Precio" class="border p-2 w-full mb-2" />
