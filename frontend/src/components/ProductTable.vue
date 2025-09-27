@@ -35,7 +35,7 @@ const handleDelete = async (id) => {
                     <th class="border px-4 py-2">Código</th>
                     <th class="border px-4 py-2">Nombre</th>
                     <th class="border px-4 py-2">Autor (Solo libros)</th>
-                    <th class="border px-4 py-2">Descipción</th>    
+                    <th class="border px-4 py-2">Descripción</th>    
                     <th class="border px-4 py-2">Categoria</th>    
                     <th class="border px-4 py-2">Proveedor</th>    
                     <th class="border px-4 py-2">Precio</th>

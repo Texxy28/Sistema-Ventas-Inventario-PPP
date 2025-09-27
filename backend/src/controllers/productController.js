@@ -97,7 +97,7 @@ export const updateProduct = async (req, res) => {
   } = req.body;
   try {
     const productoActual = await pool.query(
-      "SELECT * FROM productos WHERE id_producto = $1",
+      "select * from productos where id_producto = $1",
       [id]
     );
     if (productoActual.rows.length === 0) {

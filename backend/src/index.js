@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import ProductRouter from './routes/productRoutes.js';
-import CategoryRouter from './routes/catregoryRoutes.js';
+import CategoryRouter from './routes/categoryRoutes.js';
 
 dotenv.config();
 

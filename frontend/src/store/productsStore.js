@@ -24,8 +24,8 @@ export const useProductStore = defineStore("products", {
     },
     async addProduct(newProduct) {
       try {
-        await addProduct(newProduct);
-        this.products.push(newProduct);
+        const res = await addProduct(newProduct);
+        this.products.push(res.data.producto);
       } catch (err) {
         this.errorProducts = "No se pudo agregar el producto";
         console.error(err);
