@@ -23,4 +23,8 @@ dist-ssr
 *.sln
 *.sw?
 
+.vscode/
+frontend/.vscode/
+backend/.vscode/
+
 .env
