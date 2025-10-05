@@ -1,13 +1,17 @@
 <script setup lang="ts">
 import { RouterView } from 'vue-router';
-import HelloWorld from '../components/HelloWorld.vue';
 import GeneralNavBar from '../components/GeneralNavBar.vue';
 
 </script>
 
 <template>
-    <div class="w-full h-14 shadow-xl flex justify-end items-center">
-        <GeneralNavBar/>
+    <div class="flex flex-col min-h-screen">
+        <header class="w-full h-16 shadow-md flex justify-end items-center bg-white">
+            <GeneralNavBar />
+        </header>
+
+        <main class="flex-1 overflow-y-auto">
+            <RouterView class="h-[calc(100vh-4rem)]" />
+        </main>
     </div>
-    <RouterView />
 </template>

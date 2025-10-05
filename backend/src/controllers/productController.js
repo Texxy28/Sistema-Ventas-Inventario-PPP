@@ -77,7 +77,7 @@ export const addProduct = async (req, res) => {
 
     res.status(201).json({ message: "Producto añadido", producto: detalles.rows[0] });
   } catch (err) {
-    console.error("Error al obtener productos", err);
+    console.error("Error al añadir producto", err);
     res.status(500).json({ error: "Error en el servidor" });
   }
 };

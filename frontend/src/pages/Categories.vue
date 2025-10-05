@@ -32,8 +32,8 @@ onMounted(async () => {
 
 <template>
 
-    <div class="m-6 grid grid-cols-4">
-        <div class="flex justify-center items-center col-span-1">
+    <div class="p-6 grid grid-cols-4">
+        <div class="flex justify-center col-span-1">
             <FormCategories :selectedCategory="selectedCategory" @addCategory="handleAddCategory" @editCategory="saveEdit" @cancelEdit="selectedCategory = null" />
         </div>
         <div class="flex justify-center col-span-3">

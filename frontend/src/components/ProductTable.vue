@@ -4,20 +4,42 @@ import { PencilSquareIcon } from '@heroicons/vue/24/outline';
 import { TrashIcon } from '@heroicons/vue/24/outline';
 import { useProductStore } from '../store/productsStore';
 
-defineProps({
+const props = defineProps({
     products: {
         type: Array,
         required: true
+    },
+    mode: {
+        type: String,
+        default: 'admin'
+    },
+    selectedProducts: {
+        type: Array,
+        default: () => []
     }
 })
 
-const emit = defineEmits(['edit']);
+const emit = defineEmits(['edit', 'selection']);
 
 const productStore = useProductStore();
 const { deleteProduct } = productStore;
 
 const handleEdit = (product) => {
     emit('edit', product);
+}
+
+const handleSelection = (event, product) => {
+    const finalProduct = {...product, cantidad: 1};
+    let updatedSelection = [...props.selectedProducts];
+
+    if (event.target.checked) {
+        if (!updatedSelection.includes(finalProduct)) {
+            updatedSelection.push(finalProduct);
+        }
+    } else {
+        updatedSelection = updatedSelection.filter(p => p.id_producto !== product.id_producto);
+    }
+    emit('selection', updatedSelection);
 }
 
 const handleDelete = async (id) => {
@@ -28,20 +50,21 @@ const handleDelete = async (id) => {
 
 <template>
 
-    <div class="overflow-x-auto">
-        <table class="min-w-full border-collapse border text-left mt-6">
+    <div class="overflow-x-auto w-full">
+        <table class="min-w-full border-collapse border text-left mt-6 text-xs">
             <thead>
                 <tr>
                     <th class="border px-4 py-2">Código</th>
                     <th class="border px-4 py-2">Nombre</th>
                     <th class="border px-4 py-2">Autor (Solo libros)</th>
-                    <th class="border px-4 py-2">Descripción</th>    
-                    <th class="border px-4 py-2">Categoria</th>    
-                    <th class="border px-4 py-2">Proveedor</th>    
+                    <th class="border px-4 py-2">Descripción</th>
+                    <th class="border px-4 py-2">Categoria</th>
+                    <th class="border px-4 py-2">Proveedor</th>
                     <th class="border px-4 py-2">Precio</th>
                     <th class="border px-4 py-2">Stock</th>
-                    <th class="border px-4 py-2">Editar</th>
-                    <th class="border px-4 py-2">Eliminar</th>
+                    <th v-if="mode === 'admin'" class="border px-4 py-2">Editar</th>
+                    <th v-if="mode === 'admin'" class="border px-4 py-2">Eliminar</th>
+                    <th v-else class="border px-4 py-2">Seleccionar</th>
                 </tr>
             </thead>
             <tbody>
@@ -54,14 +77,19 @@ const handleDelete = async (id) => {
                     <td class="border px-4 py-2">{{ product.proveedor }}</td>
                     <td class="border px-4 py-2">{{ product.precio }}</td>
                     <td class="border px-4 py-2">{{ product.stock }}</td>
-                    <td class="border px-4 py-2">
+                    <td v-if="mode === 'admin'" class="border px-4 py-2">
                         <div class="flex justify-center items-center">
-                            <PencilSquareIcon @click="handleEdit(product)" class="h-5 w-5 cursor-pointer"/>
+                            <PencilSquareIcon @click="handleEdit(product)" class="h-5 w-5 cursor-pointer" />
                         </div>
                     </td>
-                    <td class="border px-4 py-2">
+                    <td v-if="mode === 'admin'" class="border px-4 py-2">
                         <div class="flex justify-center items-center">
-                            <TrashIcon @click="handleDelete(product.id_producto)" class="h-5 w-5 cursor-pointer"/>
+                            <TrashIcon @click="handleDelete(product.id_producto)" class="h-5 w-5 cursor-pointer" />
+                        </div>
+                    </td>
+                    <td v-else class="border px-4 py-2">
+                        <div class="flex justify-center items-center">
+                            <input type="checkbox" @change="handleSelection($event, product)" :checked="selectedProducts.some(p => p.id_producto === product.id_producto)"/>
                         </div>
                     </td>
                 </tr>
