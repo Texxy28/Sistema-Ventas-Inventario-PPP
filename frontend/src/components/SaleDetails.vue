@@ -21,6 +21,7 @@ const change = computed(() => {
 });
 
 const handleFinalize = () => {
+    moneyReceived.value = 0;
     emit('finalize', {
         productos: props.selectedProducts,
         total: total.value,

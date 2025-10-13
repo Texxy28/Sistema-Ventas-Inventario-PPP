@@ -6,6 +6,7 @@ import { useProductStore } from '../store/productsStore';
 import { computed, onMounted, ref } from 'vue';
 import SaleDetails from '../components/SaleDetails.vue';
 import { useSaleStore } from '../store/salesStore';
+import VoucherModal from '../components/VoucherModal.vue';
 
 const productStore = useProductStore();
 const { products, loadingProducts, errorProducts } = storeToRefs(productStore);
@@ -16,6 +17,9 @@ const { addSale } = saleStore;
 
 const searchQuery = ref('');
 const selectedProducts = ref([]);
+
+const showVoucher = ref(false);
+const voucherId = ref(null);
 
 const filteredProducts = computed(() => {
     if (!searchQuery.value) return products.value;
@@ -39,11 +43,15 @@ const handleClear = () => {
 const handleFinalize = async ({ productos, total }) => {
     const saleData = {
         productos: productos,
-        total: total, 
+        total: total,
         id_usuario: 1, // temporal
         estado: 'completada'
     };
-    await addSale(saleData);
+    const data = await addSale(saleData);
+    if (data?.comprobante_id) {
+        voucherId.value = data.comprobante_id;
+        showVoucher.value = true;
+    }
     selectedProducts.value = [];
     await fetchProducts();
 }
@@ -63,12 +71,19 @@ onMounted(async () => {
             </div>
             <div class="flex justify-center">
                 <div v-if="loadingProducts">Cargando...</div>
-                <ProductTable v-if="products.length && !loadingProducts" :products="filteredProducts" mode="sales" @selection="handleSelection" :selectedProducts="selectedProducts" />
+                <ProductTable v-if="products.length && !loadingProducts" :products="filteredProducts" mode="sales"
+                    @selection="handleSelection" :selectedProducts="selectedProducts" />
                 <div v-if="errorProducts">{{ errorProducts }}</div>
             </div>
         </div>
         <div class="col-span-1 p-6">
             <SaleDetails :selectedProducts="selectedProducts" @clear="handleClear" @finalize="handleFinalize" />
         </div>
+
+        <div>
+            <VoucherModal :visible="showVoucher" :comprobante_id="voucherId" @close="showVoucher = false" />
+        </div>
+
     </div>
+
 </template>

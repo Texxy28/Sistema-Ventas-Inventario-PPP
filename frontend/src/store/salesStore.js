@@ -12,6 +12,7 @@ export const useSaleStore = defineStore("sales", {
       try {
         const res = await addSale(newSaleData);
         this.sales.push(res.data.venta);
+        return res.data;
       } catch (err) {
         this.errorSales = "No se pudo agregar la venta";
         console.error(err);
