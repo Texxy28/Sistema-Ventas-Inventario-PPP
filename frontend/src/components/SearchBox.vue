@@ -28,7 +28,7 @@ watch(searchQuery, (newQuery) => {
 </script>
 
 <template>
-    <div class="flex items-center border border-gray-300 rounded-md px-3 py-1 gap-2">
+    <div class="flex items-center border border-[#B0B0AE] rounded-md px-3 py-1 gap-2">
         <MagnifyingGlassIcon class="h-4 w-4"/>
         <input v-model="searchQuery" :placeholder="placeholder" type="text" class="focus:outline-none"/>
     </div>

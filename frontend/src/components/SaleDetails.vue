@@ -31,7 +31,7 @@ const handleFinalize = () => {
 </script>
 
 <template>
-    <div class="flex flex-col h-full p-4 gap-4">
+    <div class="bg-[#ECEAE5] shadow-sm shadow-[#8B5E3C]/20 flex flex-col h-full p-4 gap-4">
         <div>
             <h2 class="text-xl font-bold mb-2">Informacion del cliente</h2>
             <input type="text" class="p-2 w-full rounded" placeholder="Nombre" />
@@ -41,7 +41,7 @@ const handleFinalize = () => {
                 <h1 class="text-lg font-semibold p-2 border-b">Detalles de venta</h1>
                 <div class="overflow-y-auto flex-grow max-h-[400px]">
                     <table class="min-w-full border-collapse text-left">
-                    <thead class="sticky top-0 bg-white z-10">
+                    <thead class="sticky top-0 bg-[#8B5E3C]/10 z-10">
                         <tr class="border-b">
                             <th class="p-2">Producto</th>
                             <th class="p-2">Cant.</th>
@@ -68,13 +68,13 @@ const handleFinalize = () => {
             <div class="flex flex-col gap-4">
                 <div class="">
                     <label class="font-semibold block mb-1">Monto recibido:</label>
-                    <input type="number" v-model.number="moneyReceived" class="b order p-2 w-full" />
+                    <input type="number" v-model.number="moneyReceived" class="border border-[#B0B0AE] p-2 w-full focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40" />
                     <p class="text-gray-600 mt-1">Vuelto: S/ {{ change.toFixed(2) }}</p>
                 </div>
 
                 <div class="flex justify-between">
-                    <button @click="emit('clear')" class="bg-gray-300 px-4 py-2 rounded">Limpiar</button>
-                    <button @click="handleFinalize" class="bg-black text-white px-4 py-2 rounded">
+                    <button @click="emit('clear')" class="bg-[#B0B0AE] text-white px-4 py-2 rounded-md hover:bg-[#8B5E3C]/70 transition cursor-pointer">Limpiar</button>
+                    <button @click="handleFinalize" class="bg-[#8B5E3C] text-white px-4 py-2 rounded-md hover:bg-[#C8A785] transition cursor-pointer">
                         Finalizar Venta
                     </button>
                 </div>
