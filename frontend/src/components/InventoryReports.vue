@@ -1,0 +1,3 @@
+<template>
+    Inventory Report
+</template>

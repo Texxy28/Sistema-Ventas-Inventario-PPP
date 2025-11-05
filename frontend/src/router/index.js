@@ -5,6 +5,7 @@ import Categories from "../pages/Categories.vue";
 import SalesManagement from "../pages/SalesManagement.vue";
 import Login from "../pages/Login.vue";
 import { useAuthStore } from "../store/authStore";
+import Dashboard from "../pages/Dashboard.vue";
 
 const routes = [
   {
@@ -14,6 +15,7 @@ const routes = [
       { path: "", component: Products, meta: { requiresAuth: true, requiredRole: 'vendedor' } },
       { path: "/categories", component: Categories, meta: { requiresAuth: true, requiredRole: 'admin' } },
       { path: "/sales", component: SalesManagement, meta: { requiresAuth: true, requiredRole: 'admin' } },
+      { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true, requiredRole: 'admin' } },
     ],
   },
   {

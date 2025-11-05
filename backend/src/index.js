@@ -8,6 +8,7 @@ import VoucherRouter from './routes/voucherRoutes.js';
 import AuthRouter from './routes/authRoutes.js';
 import UserRouter from './routes/userRoutes.js';
 import cookieParser from 'cookie-parser';
+import ReportRouter from './routes/salesReportRouter.js';
 
 dotenv.config();
 
@@ -27,6 +28,7 @@ app.use("/api/sale", SaleRouter)
 app.use("/api/voucher", VoucherRouter)
 app.use("/api/auth", AuthRouter)
 app.use("/api/user", UserRouter)
+app.use("/api/report", ReportRouter)
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

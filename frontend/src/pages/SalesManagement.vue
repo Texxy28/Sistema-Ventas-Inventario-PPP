@@ -9,13 +9,17 @@ import VoucherModal from '../components/VoucherModal.vue';
 import ProductList from '../components/ProductList.vue';
 import { useCategoryStore } from '../store/categoriesStore';
 import CategoriesFilter from '../components/CategoriesFilter.vue';
+import { useAuthStore } from '../store/authStore';
 
 const productStore = useProductStore();
 const categoryStore = useCategoryStore();
+const authStore = useAuthStore();
 const { products, loadingProducts, errorProducts } = storeToRefs(productStore);
 const { categories, loadingCategories, errorCategories } = storeToRefs(categoryStore);
+const { user } = storeToRefs(authStore);
 const { fetchProducts } = productStore;
 const { fetchCategories } = categoryStore;
+const { fetchUser } = authStore;
 
 const saleStore = useSaleStore();
 const { addSale } = saleStore;
@@ -53,10 +57,11 @@ const handleClear = () => {
 }
 
 const handleFinalize = async ({ productos, total }) => {
+    await fetchUser();
     const saleData = {
         productos: productos,
         total: total,
-        id_usuario: 1, // temporal
+        id_usuario: user.value.id_usuario,
         estado: 'completada'
     };
     const data = await addSale(saleData);
