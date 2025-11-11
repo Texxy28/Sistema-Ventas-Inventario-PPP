@@ -20,7 +20,7 @@ const emit = defineEmits(['edit', 'delete', 'select']);
         borderColor: categoryStyles[product.categoria].color
     }">
 
-        <div class="h-full w-2 rounded-l-xl" :style="{
+        <div class="h-full min-w-2 w-2 rounded-l-xl" :style="{
             backgroundColor: categoryStyles[product.categoria].color
         }"></div>
 

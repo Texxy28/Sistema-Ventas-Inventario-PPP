@@ -1,9 +1,11 @@
 import pool from "../config/db.js";
 
 export const getAllProducts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const offset = (page - 1) * limit;
   try {
-    const result = await pool.query(
-      `select 
+    const productsQuery = `select 
       p.id_producto, p.codigo, p.nombre, p.autor, p.descripcion, 
       p.id_categoria, c.nombre as categoria,
       p.id_proveedor, pr.nombre as proveedor, p.precio, p.stock, p.punto_reorden, 
@@ -11,9 +13,20 @@ export const getAllProducts = async (req, res) => {
       from productos p
       left join categorias c on p.id_categoria = c.id_categoria 
       left join proveedores pr on p.id_proveedor = pr.id_proveedor
-      order by id_producto`
-    );
-    res.json(result.rows);
+      order by id_producto limit $1 offset $2`;
+    const totalQuery = `select count(*) from productos`;
+    const [productsResult, totalResult] = await Promise.all([
+      pool.query(productsQuery, [limit, offset]),
+      pool.query(totalQuery),
+    ]);
+    const total = parseInt(totalResult.rows[0].count);
+    const totalPages = Math.ceil(total / limit);
+    res.json({
+      products: productsResult.rows,
+      total,
+      totalPages,
+      currentPage: page,
+    });
   } catch (err) {
     console.error("Error al obtener productos", err);
     res.status(500).json({ error: "Error en el servidor" });
@@ -31,7 +44,7 @@ export const addProduct = async (req, res) => {
     precio,
     stock,
     punto_reorden,
-    usuario_responsable
+    usuario_responsable,
   } = req.body;
   try {
     const result = await pool.query(
@@ -75,7 +88,9 @@ export const addProduct = async (req, res) => {
       [nuevoProducto.id_producto]
     );
 
-    res.status(201).json({ message: "Producto añadido", producto: detalles.rows[0] });
+    res
+      .status(201)
+      .json({ message: "Producto añadido", producto: detalles.rows[0] });
   } catch (err) {
     console.error("Error al añadir producto", err);
     res.status(500).json({ error: "Error en el servidor" });
@@ -93,7 +108,7 @@ export const updateProduct = async (req, res) => {
     precio,
     stock,
     punto_reorden,
-    usuario_responsable
+    usuario_responsable,
   } = req.body;
   try {
     const productoActual = await pool.query(
@@ -165,8 +180,10 @@ export const updateProduct = async (req, res) => {
       [nuevoProducto.id_producto]
     );
 
-    res.status(200).json({ message: "Producto actualizado", producto: detalles.rows[0] });
-  } catch (err) { 
+    res
+      .status(200)
+      .json({ message: "Producto actualizado", producto: detalles.rows[0] });
+  } catch (err) {
     console.error("Error al actualizar el producto", err);
     res.status(500).json({ error: "Error en el servidor" });
   }
@@ -182,9 +199,11 @@ export const deleteProduct = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
-    res.status(200).json({ message: "Producto eliminado", producto: result.rows[0] });
+    res
+      .status(200)
+      .json({ message: "Producto eliminado", producto: result.rows[0] });
   } catch (err) {
     console.error("Error al eliminar el producto", err);
     res.status(500).json({ error: "Error en el servidor" });
   }
-}
+};

@@ -4,7 +4,7 @@ import CategoriesTable from '../components/CategoriesTable.vue';
 import { useCategoryStore } from '../store/categoriesStore';
 import FormCategories from '../components/FormCategories.vue';
 import { onMounted, ref } from 'vue';
-import { ClipboardDocumentListIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, ClipboardDocumentListIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
 const categoryStore = useCategoryStore();
 const { categories, loadingCategories, errorCategories } = storeToRefs(categoryStore);
@@ -53,7 +53,12 @@ onMounted(async () => {
                     <ClipboardDocumentListIcon class="lg:hidden w-8 h-8 cursor-pointer" @click="toggleForm" />
                 </div>
                 <div class="flex-1 overflow-y-auto max-h-[80vh]">
-                    <div v-if="loadingCategories">Cargando...</div>
+                    <div v-if="loadingCategories">
+                        <div class="h-[80vh] w-full flex gap-2 items-center justify-center">
+                            <ArrowPathIcon class="w-8 h-8 text-[#2E2B26] animate-spin" />
+                            <span class="text-[#2E2B26] text-lg">Cargando...</span>
+                        </div>
+                    </div>
                     <CategoriesTable v-if="categories.length && !loadingCategories" :categories="categories"
                         @edit="selectCategory" />
                     <div v-if="errorCategories">{{ errorCategories }}</div>

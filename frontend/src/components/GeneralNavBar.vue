@@ -28,10 +28,10 @@ const toggleMenu = () => {
             <Bars3Icon class="w-8 h-8 cursor-pointer" @click="toggleMenu" />
         </div>
         <div class="hidden md:flex items-center gap-3">
-            <RouterLink class="hover:text-[#8B5E3C] transition" to="/">Productos</RouterLink>
-            <RouterLink class="hover:text-[#8B5E3C] transition" to="/categories">Categorías</RouterLink>
-            <RouterLink class="hover:text-[#8B5E3C] transition" to="/sales">Ventas</RouterLink>
-            <RouterLink class="hover:text-[#8B5E3C] transition" to="/dashboard">Reportes</RouterLink>
+            <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/productos">Productos</RouterLink>
+            <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/categories">Categorías</RouterLink>
+            <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/sales">Ventas</RouterLink>
+            <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/dashboard">Reportes</RouterLink>
             <button @click="logoutFunc"
                 class="bg-[#2E2B26] text-[#F7F5F0] hover:bg-[#8B5E3C] px-4 py-2 rounded-lg cursor-pointer">Cerrar
                 sesión</button>

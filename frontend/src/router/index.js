@@ -12,7 +12,7 @@ const routes = [
     path: "/",
     component: GeneralLayout,
     children: [
-      { path: "", component: Products, meta: { requiresAuth: true, requiredRole: 'vendedor' } },
+      { path: "/productos", component: Products, meta: { requiresAuth: true, requiredRole: 'vendedor' } },
       { path: "/categories", component: Categories, meta: { requiresAuth: true, requiredRole: 'admin' } },
       { path: "/sales", component: SalesManagement, meta: { requiresAuth: true, requiredRole: 'admin' } },
       { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true, requiredRole: 'admin' } },

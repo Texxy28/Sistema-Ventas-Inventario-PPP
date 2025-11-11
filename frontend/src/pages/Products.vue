@@ -7,11 +7,11 @@ import FormProducts from '../components/FormProducts.vue';
 import SearchBox from '../components/SearchBox.vue';
 import ProductList from '../components/ProductList.vue';
 import CategoriesFilter from '../components/CategoriesFilter.vue';
-import { ClipboardDocumentListIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { ArrowPathIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 
 const productStore = useProductStore();
 const categoryStore = useCategoryStore();
-const { products, loadingProducts, errorProducts } = storeToRefs(productStore);
+const { products, currentPage, totalPages, loadingProducts, errorProducts } = storeToRefs(productStore);
 const { categories, loadingCategories, errorCategories } = storeToRefs(categoryStore);
 const { fetchProducts, updateProduct, addProduct } = productStore;
 const { fetchCategories } = categoryStore;
@@ -60,6 +60,23 @@ const toogleForm = () => {
     openForm.value = !openForm.value;
 }
 
+const nextPage = () => {
+    if (currentPage.value < totalPages.value) {
+        fetchProducts(currentPage.value + 1)
+    }
+}
+
+const prevPage = () => {
+    if (currentPage.value > 1) {
+        fetchProducts(currentPage.value - 1)
+    }
+}
+
+const reload = async () => {
+    await fetchProducts(currentPage);
+    await fetchCategories();
+}
+
 onMounted(async () => {
     await fetchProducts();
     await fetchCategories();
@@ -75,20 +92,42 @@ onMounted(async () => {
                     :errorCategories="errorCategories" :categories="categories" @addProduct="handleAddProduct"
                     @editProduct="saveEdit" @cancelEdit="selectedProduct = null" />
             </div>
-            <div class="col-span-3">
+            <div class="col-span-3 mt-4">
                 <div class="flex flex-row justify-between items-center">
-                    <SearchBox class="self-end" placeholder="Buscar productos..." @search="handleSearch" />
+                    <div class="flex flex-row gap-2">
+                        <ArrowPathIcon class="w-8 h-8 bg-[#ECEAE5] p-1 rounded-md cursor-pointer" @click="reload" />
+                        <SearchBox class="self-end" placeholder="Buscar productos..." @search="handleSearch" />
+                    </div>
                     <ClipboardDocumentListIcon class="lg:hidden w-8 h-8 cursor-pointer" @click="toogleForm" />
                 </div>
-                <div class="flex items-center justify-center">
-                    <CategoriesFilter :categories="categories" @selection="selectCategoryFilter"
-                        :selectedCategory="selectedCategoryFilter" />
+                <div v-if="loadingProducts">
+                    <div class="h-[80vh] w-full flex gap-2 items-center justify-center">
+                        <ArrowPathIcon class="w-8 h-8 text-[#2E2B26] animate-spin" />
+                        <span class="text-[#2E2B26] text-lg">Cargando...</span>
+                    </div>
                 </div>
-                <div class="flex-1 overflow-y-auto max-h-[80vh]">
-                    <div v-if="loadingProducts">Cargando...</div>
-                    <ProductList v-if="products.length && !loadingProducts" :products="filteredProducts"
-                        @edit="selectProduct" mode="admin" />
-                    <div v-if="errorProducts">{{ errorProducts }}</div>
+                <div class="h-[80vh]" v-if="products.length && !loadingProducts">
+                    <div class="flex items-center justify-center">
+                        <CategoriesFilter :categories="categories" @selection="selectCategoryFilter"
+                            :selectedCategory="selectedCategoryFilter" />
+                    </div>
+                    <div class="flex-1 flex flex-col max-h-[80vh] relative overflow-hidden">
+                        <div class="flex-1 overflow-y-auto min-h-[60vh]">
+                            <ProductList :products="filteredProducts" @edit="selectProduct" mode="admin" />
+                        </div>
+                        <div v-if="errorProducts">{{ errorProducts }}</div>
+                        <div class="w-full flex justify-center items-center sticky bottom-0 gap-4 py-4">
+                            <div>
+                                <ChevronLeftIcon class="h-8 w-8 cursor-pointer" @click="prevPage"/>
+                            </div>
+                            <div>
+                                <span>Página {{ currentPage }} de {{ totalPages }}</span>
+                            </div>
+                            <div>
+                                <ChevronRightIcon class="h-8 w-8 cursor-pointer" @click="nextPage"/>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

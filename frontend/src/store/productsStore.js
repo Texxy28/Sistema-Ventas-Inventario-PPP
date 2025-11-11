@@ -4,17 +4,21 @@ import { addProduct, deleteProduct, getProducts, updateProduct } from "../servic
 export const useProductStore = defineStore("products", {
   state: () => ({
     products: [],
+    totalPages: 1,
+    currentPage: 1,
     loadingProducts: false,
     errorProducts: null,
   }),
 
   actions: {
-    async fetchProducts() {
+    async fetchProducts(page, limit) {
       this.loadingProducts = true;
       this.errorProducts = null;
       try {
-        const response = await getProducts();
-        this.products = response.data;
+        const response = await getProducts(page, limit);
+        this.products = response.data.products;
+        this.totalPages = response.data.totalPages;
+        this.currentPage = response.data.currentPage;
       } catch (err) {
         this.errorProducts = "No se pudieron cargar los productos";
         console.error(err);

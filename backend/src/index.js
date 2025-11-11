@@ -9,6 +9,7 @@ import AuthRouter from './routes/authRoutes.js';
 import UserRouter from './routes/userRoutes.js';
 import cookieParser from 'cookie-parser';
 import ReportRouter from './routes/salesReportRouter.js';
+import InventoryReportRouter from './routes/inventoryReportRouter.js';
 
 dotenv.config();
 
@@ -29,6 +30,7 @@ app.use("/api/voucher", VoucherRouter)
 app.use("/api/auth", AuthRouter)
 app.use("/api/user", UserRouter)
 app.use("/api/report", ReportRouter)
+app.use("/api/inventoryReport", InventoryReportRouter)
 
 app.listen(port, () => {
   console.log(`Servidor corriendo en http://localhost:${port}`);

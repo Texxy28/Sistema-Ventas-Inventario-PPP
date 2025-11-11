@@ -26,6 +26,7 @@ export const useAuthStore = defineStore("auth", {
             this.user = null;
         },
         async fetchUser() {
+            this.errorAuth = null;
             try {
                 const res = await fecthMe();
                 this.user = res.data.user;
