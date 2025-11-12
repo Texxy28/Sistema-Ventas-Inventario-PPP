@@ -52,7 +52,7 @@ export const login = async (req, res) => {
     res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.COOKIE_SECURE === "true",
-      sameSite: "lax",
+      sameSite: "None",
       maxAge: 1000 * 60 * 60 * 8, // 8 horas
     });
     delete user.contraseña;

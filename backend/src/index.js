@@ -17,7 +17,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(cors({
-  origin: 'http://localhost:5173',
+  origin: ['http://localhost:5173', 'https://sistema-ventas-inventario-ppp.vercel.app'],
   credentials: true
 }));
 app.use(cookieParser());
@@ -33,5 +33,5 @@ app.use("/api/report", ReportRouter)
 app.use("/api/inventoryReport", InventoryReportRouter)
 
 app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
+  console.log(`Servidor corriendo`);
 });
