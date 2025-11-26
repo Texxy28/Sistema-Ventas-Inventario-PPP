@@ -1,7 +1,7 @@
 <script setup>
 import { storeToRefs } from 'pinia';
 import { useProductStore } from '../store/productsStore';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useCategoryStore } from '../store/categoriesStore';
 import FormProducts from '../components/FormProducts.vue';
 import SearchBox from '../components/SearchBox.vue';
@@ -13,7 +13,7 @@ const productStore = useProductStore();
 const categoryStore = useCategoryStore();
 const { products, currentPage, totalPages, loadingProducts, errorProducts } = storeToRefs(productStore);
 const { categories, loadingCategories, errorCategories } = storeToRefs(categoryStore);
-const { fetchProducts, updateProduct, addProduct } = productStore;
+const { fetchProducts, fetchProductsByCategory, updateProduct, addProduct } = productStore;
 const { fetchCategories } = categoryStore;
 
 const selectedProduct = ref(null);
@@ -72,6 +72,14 @@ const prevPage = () => {
     }
 }
 
+watch(selectedCategoryFilter, async(newValue) => {
+    if (!newValue) {
+        fetchProducts();
+        return;
+    }
+    fetchProductsByCategory(newValue.id_categoria)
+})
+
 const reload = async () => {
     await fetchProducts(currentPage);
     await fetchCategories();
@@ -111,7 +119,7 @@ onMounted(async () => {
                         <CategoriesFilter :categories="categories" @selection="selectCategoryFilter"
                             :selectedCategory="selectedCategoryFilter" />
                     </div>
-                    <div class="flex-1 flex flex-col max-h-[80vh] relative overflow-hidden">
+                    <div class="flex-1 flex flex-col max-h-[70vh] relative overflow-hidden">
                         <div class="flex-1 overflow-y-auto min-h-[60vh]">
                             <ProductList :products="filteredProducts" @edit="selectProduct" mode="admin" />
                         </div>

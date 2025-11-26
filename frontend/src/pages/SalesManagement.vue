@@ -119,7 +119,7 @@ onMounted(async () => {
                     <CategoriesFilter :categories="categories" @selection="selectCategoryFilter"
                         :selectedCategory="selectedCategoryFilter" />
                 </div>
-                <div class="flex-1 flex flex-col max-h-[80vh] relative overflow-hidden">
+                <div class="flex-1 flex flex-col max-h-[70vh] relative overflow-hidden">
                     <div class="flex-1 overflow-y-auto min-h-[60vh]">
                         <ProductList :products="filteredProducts" mode="sales" @selection="handleSelection"
                             :selectedProducts="selectedProducts" />

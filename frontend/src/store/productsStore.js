@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { addProduct, deleteProduct, getProducts, updateProduct } from "../services/products";
+import { addProduct, deleteProduct, getProducts, getProductsByCategory, updateProduct } from "../services/products";
 
 export const useProductStore = defineStore("products", {
   state: () => ({
@@ -56,6 +56,21 @@ export const useProductStore = defineStore("products", {
       } catch (err) {
         this.errorProducts = "No se pudo eliminar el producto";
         console.error(err);
+      }
+    },
+    async fetchProductsByCategory(categoryId, page, limit) {
+      this.loadingProducts = true;
+      this.errorProducts = null;
+      try {
+        const response = await getProductsByCategory(categoryId, page, limit);
+        this.products = response.data.products;
+        this.totalPages = response.data.totalPages;
+        this.currentPage = response.data.currentPage;
+      } catch (err) {
+        this.errorProducts = "No se pudieron cargar los productos";
+        console.error(err);
+      } finally {
+        this.loadingProducts = false;
       }
     },
   },

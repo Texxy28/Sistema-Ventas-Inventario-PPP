@@ -13,7 +13,7 @@ const { login } = authStore;
 
 const handleSubmit = async () => {
     await login(correo.value, contraseña.value);
-    if (user) router.push("/")
+    if (user) router.push("/productos")
 };
 </script>
 

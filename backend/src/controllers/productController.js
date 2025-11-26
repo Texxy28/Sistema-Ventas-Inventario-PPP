@@ -207,3 +207,38 @@ export const deleteProduct = async (req, res) => {
     res.status(500).json({ error: "Error en el servidor" });
   }
 };
+
+export const getProductByCategory = async (req, res) => {
+  const categoryId = req.query.categoryId;
+  const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const offset = (page - 1) * limit;
+  try {
+    const productsQuery = `select 
+      p.id_producto, p.codigo, p.nombre, p.autor, p.descripcion, 
+      p.id_categoria, c.nombre as categoria,
+      p.id_proveedor, pr.nombre as proveedor, p.precio, p.stock, p.punto_reorden, 
+      p.fecha_creacion, p.fecha_actualizacion
+      from productos p
+      left join categorias c on p.id_categoria = c.id_categoria 
+      left join proveedores pr on p.id_proveedor = pr.id_proveedor
+      where p.id_categoria = $1
+      order by p.id_producto limit $2 offset $3`;
+    const totalQuery = `select count(*) from productos where id_categoria = $1`;
+    const [productsResult, totalResult] = await Promise.all([
+      pool.query(productsQuery, [categoryId, limit, offset]),
+      pool.query(totalQuery, [categoryId]),
+    ]);
+    const total = parseInt(totalResult.rows[0].count);
+    const totalPages = Math.ceil(total / limit);
+    res.json({
+      products: productsResult.rows,
+      total,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (err) {
+    console.error("Error al obtener productos", err);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+};
