@@ -182,9 +182,6 @@ onMounted(async () => {
                             <span class="text-[#2E2B26] text-lg">Cargando...</span>
                         </div>
                     </div>
-                    <div class="h-[80vh]">
-
-                    </div>
                     <div class="h-[80vh]" v-if="products.length && !loadingProducts">
                         <div>
                             <div class="flex-1 flex flex-col max-h-[70vh] relative overflow-hidden">
