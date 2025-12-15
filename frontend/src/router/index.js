@@ -6,6 +6,7 @@ import SalesManagement from "../pages/SalesManagement.vue";
 import Login from "../pages/Login.vue";
 import { useAuthStore } from "../store/authStore";
 import Dashboard from "../pages/Dashboard.vue";
+import Sales from "../pages/Sales.vue";
 
 const routes = [
   {
@@ -14,8 +15,9 @@ const routes = [
     children: [
       { path: "/productos", component: Products, meta: { requiresAuth: true, requiredRole: 'vendedor' } },
       { path: "/categories", component: Categories, meta: { requiresAuth: true, requiredRole: 'admin' } },
-      { path: "/sales", component: SalesManagement, meta: { requiresAuth: true, requiredRole: 'admin' } },
+      { path: "/sales-control", component: SalesManagement, meta: { requiresAuth: true, requiredRole: 'admin' } },
       { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true, requiredRole: 'admin' } },
+      { path: "/sales", component: Sales, meta: { requiresAuth: true, requiredRole: 'admin' } },
     ],
   },
   {

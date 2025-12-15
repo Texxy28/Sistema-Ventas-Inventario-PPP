@@ -30,6 +30,7 @@ const toggleMenu = () => {
         <div class="hidden md:flex items-center gap-3">
             <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/productos">Productos</RouterLink>
             <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/categories">Categorías</RouterLink>
+            <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/sales-control">Nueva venta</RouterLink>
             <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/sales">Ventas</RouterLink>
             <RouterLink class="hover:text-[#8B5E3C] transition" active-class="bg-[#8B5E3C] p-2 text-white rounded" to="/dashboard">Reportes</RouterLink>
             <button @click="logoutFunc"
@@ -41,9 +42,10 @@ const toggleMenu = () => {
         <nav v-if="isOpen"
             class="fixed top-0 left-0 w-64 h-full bg-[#2E2B26] text-white z-40 shadow-xl flex flex-col py-6 px-4 space-y-6 transform transition-all duration-300">
             <XMarkIcon @click="toggleMenu" class="w-6 h-6 cursor-pointer self-end hover:stroke-[#C8A785]" />
-            <RouterLink to="/" class="block py-2 hover:text-[#C8A785]" @click="toggleMenu">Productos</RouterLink>
+            <RouterLink to="/productos" class="block py-2 hover:text-[#C8A785]" @click="toggleMenu">Productos</RouterLink>
             <RouterLink to="/categories" class="block py-2 hover:text-[#C8A785]" @click="toggleMenu">Categorías
             </RouterLink>
+            <RouterLink to="/sales-control" class="block py-2 hover:text-[#C8A785]" @click="toggleMenu">Nueva venta</RouterLink>
             <RouterLink to="/sales" class="block py-2 hover:text-[#C8A785]" @click="toggleMenu">Ventas</RouterLink>
             <RouterLink to="/dashboard" class="block py-2 hover:text-[#C8A785]" @click="toggleMenu">Reportes</RouterLink>
             <button @click="logoutFunc"

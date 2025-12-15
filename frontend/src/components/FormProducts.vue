@@ -11,7 +11,13 @@ const props = defineProps({
         defaut: () => []
     },
     loadingCategories: Boolean,
-    errorCategories: String
+    errorCategories: String,
+    suppliers: {
+        type: Array,
+        defaut: () => []
+    },
+    loadingSuppliers: Boolean,
+    errorSuppliers: String
 });
 
 const emit = defineEmits(['addProduct', 'editProduct', 'cancelEdit']);
@@ -86,8 +92,14 @@ const handleCancel = () => {
                 </option>
             </select>
         </div>
-        <input v-model="formProduct.id_proveedor" type="number" placeholder="Proveedor"
-            class="border border-[#B0B0AE] p-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40 w-full mb-2" />
+        <div>
+            <select v-model="formProduct.id_proveedor" class="border border-[#B0B0AE] p-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40 w-full mb-2">
+                <option disabled value="">{{ props.loadingSuppliers ? "Cargando proveedores..." : props.errorSuppliers ? props.errorSuppliers : "Seleccione un proveedor"}}</option>
+                <option v-for="supplier in suppliers" :key="supplier.id_proveedor" :value="supplier.id_proveedor">
+                    {{ supplier.nombre }}
+                </option>
+            </select>
+        </div>
         <input v-model="formProduct.precio" type="number" placeholder="Precio" class="border border-[#B0B0AE] p-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40 w-full mb-2" />
         <input v-model="formProduct.stock" type="number" placeholder="Stock" class="border border-[#B0B0AE] p-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40 w-full mb-2" />
         <input v-model="formProduct.punto_reorden" type="number" min="5" placeholder="Punto reorden"

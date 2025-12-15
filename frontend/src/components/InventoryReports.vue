@@ -64,7 +64,7 @@ onMounted(async () => {
             {{ errorInventoryReport }}
         </div>
         <div v-if="productsLowStock && bottomProductsByDateRange && productsNoMovementByDateRange && inventoryValue && productsSoldByCategory && !loadingInventoryReport">
-            <div class="mt-4 flex gap-2">
+            <div class="mt-4 flex gap-2 md:overflow-visible overflow-scroll">
                 <div class="bg-[#F7F5F0] p-4 w-96 rounded-2xl shadow-md">
                     <h1 class="font-semibold text-lg">Productos con bajo stock</h1>
                     <div class="min-h-40 max-h-40 overflow-y-auto scrollbar-thin scrollbar-thumb-[#B0B0AE]/40 scrollbar-track-[#F7F5F0]">
@@ -87,15 +87,15 @@ onMounted(async () => {
                         </section>
                     </div>
                 </div>
-                <div class="bg-[#F7F5F0] p-4 rounded-lg shadow-md flex items-center gap-3 w-70 h-20">
+                <div class="bg-[#F7F5F0] p-4 rounded-lg shadow-md flex items-center gap-3 md:w-90 min-w-50 max-w-90 h-20">
                     <CurrencyDollarIcon class="h-10 w-10 bg-green-200 text-green-500 p-1 rounded-lg" />
                     <div class="flex flex-col">
-                        <span class="font-extralight">Valor total del inventario</span>
-                        <span class="font-semibold text-lg">S/. {{ inventoryValue.valor_total_inventario }}</span>
+                        <span class="font-extralight md:text-lg text-sm">Valor total del inventario</span>
+                        <span class="font-semibold md:text-lg text-sm">S/. {{ inventoryValue.valor_total_inventario }}</span>
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-2">
+            <div class="grid md:grid-cols-2 grid-cols-1">
                 <section class="col-span-1 p-4 my-4 flex flex-col items-center justify-center w-full min-h-80 max-h-80">
                     <h1 class="font-semibold text-xl">Productos menos vendidos</h1>
                     <BottomProductsPie :chartData="bottomProductsByDateRange" />

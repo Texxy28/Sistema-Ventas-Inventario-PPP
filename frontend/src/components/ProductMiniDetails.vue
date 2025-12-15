@@ -17,11 +17,11 @@ const emit = defineEmits(['edit', 'delete', 'select']);
 <template>
 
     <div class="w-full h-48 border rounded-lg flex flex-row relative" :style="{
-        borderColor: categoryStyles[product.categoria].color
+        borderColor: product.categoria !== null ?  categoryStyles[product.categoria].color : '#B0B0AE'
     }">
 
         <div class="h-full min-w-2 w-2 rounded-l-xl" :style="{
-            backgroundColor: categoryStyles[product.categoria].color
+            backgroundColor: product.categoria !== null ? categoryStyles[product.categoria].color : '#B0B0AE'
         }"></div>
 
         <div class="flex flex-col py-4 px-4 gap-2 pr-11">

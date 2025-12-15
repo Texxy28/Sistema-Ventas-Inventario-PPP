@@ -23,8 +23,8 @@ const handleSubmit = async () => {
             <h2 class="text-2xl font-[#2E2B26] font-bold mb-4">Iniciar sesión</h2>
             <input v-model="correo" placeholder="Correo" class="border p-2 w-full mb-2" />
             <input v-model="contraseña" placeholder="Contraseña" type="password" class="border p-2 w-full mb-4" />
-            <div v-if="errorAuth" class="text-red-500 mb-2">{{ errorAuth }}</div>
             <button @click="handleSubmit" :disabled="loadingAuth" class="bg-[#8B5E3C] text-white px-4 py-2 rounded">Iniciar sesión</button>
+            <div v-if="errorAuth" class="text-red-500 mb-2">{{ errorAuth }}</div>
         </div>
     </div>
 </template>

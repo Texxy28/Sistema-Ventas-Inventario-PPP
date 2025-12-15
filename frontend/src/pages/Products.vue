@@ -8,13 +8,18 @@ import SearchBox from '../components/SearchBox.vue';
 import ProductList from '../components/ProductList.vue';
 import CategoriesFilter from '../components/CategoriesFilter.vue';
 import { ArrowPathIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, XMarkIcon } from '@heroicons/vue/24/outline';
+import { useSupplierStore } from '../store/suppliersStore';
+import ErrorModal from '../components/ErrorModal.vue';
 
 const productStore = useProductStore();
 const categoryStore = useCategoryStore();
+const supplierStore = useSupplierStore();
 const { products, currentPage, totalPages, loadingProducts, errorProducts } = storeToRefs(productStore);
 const { categories, loadingCategories, errorCategories } = storeToRefs(categoryStore);
+const { suppliers, loadingSuppliers, errorSuppliers } = storeToRefs(supplierStore);
 const { fetchProducts, fetchProductsByCategory, updateProduct, addProduct } = productStore;
 const { fetchCategories } = categoryStore;
+const { fetchSuppliers } = supplierStore;
 
 const selectedProduct = ref(null);
 const selectedCategoryFilter = ref(null);
@@ -72,7 +77,7 @@ const prevPage = () => {
     }
 }
 
-watch(selectedCategoryFilter, async(newValue) => {
+watch(selectedCategoryFilter, async (newValue) => {
     if (!newValue) {
         fetchProducts();
         return;
@@ -86,8 +91,11 @@ const reload = async () => {
 }
 
 onMounted(async () => {
-    await fetchProducts();
-    await fetchCategories();
+    await Promise.all([
+        fetchProducts(),
+        fetchCategories(),
+        fetchSuppliers()
+    ])
 })
 
 </script>
@@ -97,7 +105,8 @@ onMounted(async () => {
         <div class="p-6 grid grid-cols-3 lg:grid-cols-4">
             <div class="hidden lg:flex justify-center col-span-1">
                 <FormProducts :selectedProduct="selectedProduct" :loadingCategories="loadingCategories"
-                    :errorCategories="errorCategories" :categories="categories" @addProduct="handleAddProduct"
+                    :errorCategories="errorCategories" :categories="categories" :loadingSuppliers="loadingSuppliers"
+                    :errorSuppliers="errorSuppliers" :suppliers="suppliers" @addProduct="handleAddProduct"
                     @editProduct="saveEdit" @cancelEdit="selectedProduct = null" />
             </div>
             <div class="col-span-3 mt-4">
@@ -107,6 +116,9 @@ onMounted(async () => {
                         <SearchBox class="self-end" placeholder="Buscar productos..." @search="handleSearch" />
                     </div>
                     <ClipboardDocumentListIcon class="lg:hidden w-8 h-8 cursor-pointer" @click="toogleForm" />
+                </div>
+                <div v-if="errorProducts" class="">
+                    <ErrorModal :visible=errorProducts :error="errorProducts" @close="errorProducts = null" />
                 </div>
                 <div v-if="loadingProducts">
                     <div class="h-[80vh] w-full flex gap-2 items-center justify-center">
@@ -123,16 +135,15 @@ onMounted(async () => {
                         <div class="flex-1 overflow-y-auto min-h-[60vh]">
                             <ProductList :products="filteredProducts" @edit="selectProduct" mode="admin" />
                         </div>
-                        <div v-if="errorProducts">{{ errorProducts }}</div>
                         <div class="w-full flex justify-center items-center sticky bottom-0 gap-4 py-4">
                             <div>
-                                <ChevronLeftIcon class="h-8 w-8 cursor-pointer" @click="prevPage"/>
+                                <ChevronLeftIcon class="h-8 w-8 cursor-pointer" @click="prevPage" />
                             </div>
                             <div>
                                 <span>Página {{ currentPage }} de {{ totalPages }}</span>
                             </div>
                             <div>
-                                <ChevronRightIcon class="h-8 w-8 cursor-pointer" @click="nextPage"/>
+                                <ChevronRightIcon class="h-8 w-8 cursor-pointer" @click="nextPage" />
                             </div>
                         </div>
                     </div>
@@ -144,7 +155,8 @@ onMounted(async () => {
             <div v-if="openForm" class="fixed lg:hidden inset-0 bg-black/50 z-[1000] flex justify-center items-center">
                 <div class="relative overflow-y-auto">
                     <FormProducts :selectedProduct="selectedProduct" :loadingCategories="loadingCategories"
-                        :errorCategories="errorCategories" :categories="categories" @addProduct="handleAddProduct"
+                        :errorCategories="errorCategories" :categories="categories" :loadingSuppliers="loadingSuppliers"
+                        :errorSuppliers="errorSuppliers" :suppliers="suppliers" @addProduct="handleAddProduct"
                         @editProduct="saveEdit" @cancelEdit="selectedProduct = null" />
                     <XMarkIcon @click="toogleForm"
                         class="absolute top-6 right-6 w-8 h-8 cursor-pointer hover:stroke-[#C8A785]" />

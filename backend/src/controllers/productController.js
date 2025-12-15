@@ -79,7 +79,7 @@ export const addProduct = async (req, res) => {
       `select 
       p.id_producto, p.codigo, p.nombre, p.autor, p.descripcion, 
       p.id_categoria, c.nombre as categoria,
-      p.id_proveedor, pr.nombre as proveedor, p.precio, p.stock, p.punto_reorden, 
+      pr.id_proveedor, pr.nombre as proveedor, p.precio, p.stock, p.punto_reorden, 
       p.fecha_creacion, p.fecha_actualizacion
       from productos p
       left join categorias c on p.id_categoria = c.id_categoria 

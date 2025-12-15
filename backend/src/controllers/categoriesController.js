@@ -16,7 +16,7 @@ export const getAllCategoriesWithProductCount = async (req, res) => {
   try {
     const result = await pool.query(
       `select 
-        c.id_categoria, c.nombre, c.descripcion,
+        c.id_categoria, c.nombre,
         count(p.id_producto) as total_productos
       from categorias c
       left join productos p on c.id_categoria = p.id_categoria
@@ -31,16 +31,16 @@ export const getAllCategoriesWithProductCount = async (req, res) => {
 };
 
 export const addCategory = async (req, res) => {
-  const { nombre, descripcion } = req.body;
+  const { nombre } = req.body;
   try {
     const result = await pool.query(
-      `insert into categorias (nombre, descripcion) 
-      values ($1, $2) returning *`,
-      [nombre, descripcion || null]
+      `insert into categorias (nombre) 
+      values ($1) returning *`,
+      [nombre || null]
     );
     const detalles = await pool.query(
       `select
-      c.id_categoria, c.nombre, c.descripcion,
+      c.id_categoria, c.nombre,
       count(p.id_producto) as total_productos
       from categorias c
       left join productos p on c.id_categoria = p.id_categoria
@@ -58,20 +58,20 @@ export const addCategory = async (req, res) => {
 
 export const updateCategory = async (req, res) => {
   const { id } = req.params;
-  const { nombre, descripcion } = req.body;
+  const { nombre } = req.body;
   try {
     const result = await pool.query(
       `update categorias 
-      set nombre = $1, descripcion = $2
-      where id_categoria = $3 returning *`,
-      [nombre, descripcion || null, id]
+      set nombre = $1,
+      where id_categoria = $2 returning *`,
+      [nombre || null, id]
     );
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Categoría no encontrada" });
     }
     const detalles = await pool.query(
       `select
-      c.id_categoria, c.nombre, c.descripcion,
+      c.id_categoria, c.nombre
       count(p.id_producto) as total_productos
       from categorias c
       left join productos p on c.id_categoria = p.id_categoria

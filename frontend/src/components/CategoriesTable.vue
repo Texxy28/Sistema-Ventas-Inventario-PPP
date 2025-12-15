@@ -33,7 +33,6 @@ const handleDelete = async (id) => {
             <thead>
                 <tr>
                     <th class="border px-4 py-2">Nombre</th>
-                    <th class="border px-4 py-2">Descripción</th>
                     <th class="border px-4 py-2">Productos en esta categoría</th>
                     <th class="border px-4 py-2">Editar</th>
                     <th class="border px-4 py-2">Eliminar</th>
@@ -42,7 +41,6 @@ const handleDelete = async (id) => {
             <tbody>
                 <tr v-for="category in categories" :key="categories.id_categoria">
                     <td class="border px-4 py-2">{{ category.nombre }}</td>
-                    <td class="border px-4 py-2">{{ category.descripcion }}</td>
                     <td class="border px-4 py-2">{{ category.total_productos }}</td>
                     <td class="border px-4 py-2">
                         <div class="flex justify-center items-center">

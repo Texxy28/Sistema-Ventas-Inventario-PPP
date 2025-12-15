@@ -71,30 +71,30 @@ onMounted(async () => {
         </div>
         <div
             v-if="salesByDateRange && salesCountByDateRange && averageSalesByDateRange && topProductsByDateRange && salesByCategoryByDateRange && salesByUserByDateRange && !loadingSalesReport">
-            <div class="mt-4 flex gap-2">
-                <div class="bg-[#F7F5F0] p-4 rounded-lg shadow-md flex items-center gap-3 w-70 h-20">
-                    <CurrencyDollarIcon class="h-10 w-10 bg-green-200 text-green-500 p-1 rounded-lg" />
+            <div class="mt-4 flex gap-2 md:overflow-visible overflow-scroll">
+                <div class="bg-[#F7F5F0] p-4 rounded-lg shadow-md flex items-center gap-3 md:w-90 min-w-50 max-w-90 h-20">
+                    <CurrencyDollarIcon class="md:min-h-10 md:min-w-10 min-h-8 min-w-8 max-w-10 bg-green-200 text-green-500 p-1 rounded-lg" />
                     <div class="flex flex-col">
-                        <span class="font-extralight">Ventas totales</span>
-                        <span class="font-semibold text-lg">S/. {{ salesByDateRange.total_sales }}</span>
+                        <span class="font-extralight md:text-lg text-sm">Ventas totales</span>
+                        <span class="font-semibold md:text-lg text-sm">S/. {{ salesByDateRange.total_sales }}</span>
                     </div>
                 </div>
-                <div class="bg-[#F7F5F0] p-4 rounded-lg shadow-md flex items-center gap-3 w-70 h-20">
-                    <PresentationChartLineIcon class="h-10 w-10 bg-red-200 text-red-500 p-1 rounded-lg" />
+                <div class="bg-[#F7F5F0] p-4 rounded-lg shadow-md flex items-center gap-3 md:w-90 min-w-50 max-w-90 h-20">
+                    <PresentationChartLineIcon class="md:min-h-10 md:min-w-10 min-h-8 min-w-8 max-w-10 bg-red-200 text-red-500 p-1 rounded-lg" />
                     <div class="flex flex-col">
-                        <span class="font-extralight">Cantidad de ventas</span>
-                        <span class="font-semibold text-lg">{{ salesCountByDateRange.sales_count }}</span>
+                        <span class="font-extralight md:text-lg text-sm">Cantidad de ventas</span>
+                        <span class="font-semibold md:text-lg text-sm">{{ salesCountByDateRange.sales_count }}</span>
                     </div>
                 </div>
-                <div class="bg-[#F7F5F0] p-4 rounded-lg shadow-md flex items-center gap-3 w-70 h-20">
-                    <PresentationChartLineIcon class="h-10 w-10 bg-red-200 text-red-500 p-1 rounded-lg" />
+                <div class="bg-[#F7F5F0] p-4 rounded-lg shadow-md flex items-center gap-3 md:w-90 min-w-50 max-w-90 h-20">
+                    <PresentationChartLineIcon class="md:min-h-10 md:min-w-10 min-h-8 min-w-8 max-w-10 bg-red-200 text-red-500 p-1 rounded-lg" />
                     <div class="flex flex-col">
-                        <span class="font-extralight">Promedio de ventas</span>
-                        <span class="font-semibold text-lg">S/. {{ averageSalesByDateRange.average_sales }}</span>
+                        <span class="font-extralight md:text-lg text-sm">Promedio de ventas</span>
+                        <span class="font-semibold md:text-lg text-sm">S/. {{ averageSalesByDateRange.average_sales }}</span>
                     </div>
                 </div>
             </div>
-            <div class="grid grid-cols-2">
+            <div class="grid md:grid-cols-2 grid-cols-1">
                 <section class="col-span-1 p-4 my-4 flex flex-col items-center justify-center w-full min-h-80 max-h-80">
                     <h1 class="font-semibold text-xl">Productos más vendidos</h1>
                     <TopProductsPie :chartData="topProductsByDateRange" />

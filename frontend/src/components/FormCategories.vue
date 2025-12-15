@@ -12,13 +12,11 @@ const emit = defineEmits(['addCategory', 'editCategory', 'cancelEdit']);
 
 const formCategory = ref({
     nombre: "",
-    descripcion: ""
 });
 
 const cleanForm = () => {
     formCategory.value = {
         nombre: "",
-        descripcion: ""
     };
 };
 

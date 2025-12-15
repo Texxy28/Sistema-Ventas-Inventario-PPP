@@ -10,6 +10,32 @@ export const getAllSales = async (req, res) => {
   }
 };
 
+export const getSalesList = async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const offset = (page - 1) * limit;
+  try {
+    const salesQuery = `select v.id_venta, v.estado, v.fecha, u.nombre || ' ' || u.apellido as vendedor, v.total, c.id_comprobante from ventas as v join usuarios as u on v.id_usuario = u.id_usuario 
+      join comprobantes as c on v.id_venta = c.id_venta order by v.fecha desc limit $1 offset $2`;
+    const totalQuery = `select count(*) from ventas`;
+    const [salesResult, totalResult] = await Promise.all([
+      pool.query(salesQuery, [limit, offset]),
+      pool.query(totalQuery),
+    ]);
+    const total = parseInt(totalResult.rows[0].count);
+    const totalPages = Math.ceil(total / limit);
+    res.json({
+      sales: salesResult.rows,
+      total,
+      totalPages,
+      currentPage: page,
+    });
+  } catch (err) {
+    console.error("Error al obtener ventas", err);
+    res.status(500).json({ error: "Error en el servidor" });
+  }
+};
+
 export const addSale = async (req, res) => {
   const { productos, total, id_usuario, estado, metodo_pago } = req.body;
   const client = await pool.connect();
@@ -70,7 +96,7 @@ export const addSale = async (req, res) => {
     res.status(201).json({
       message: "Venta registrada exitosamente",
       venta: nuevaVenta,
-      comprobante_id: nuevoComprobanteId
+      comprobante_id: nuevoComprobanteId,
     });
   } catch (err) {
     await client.query("rollback");
