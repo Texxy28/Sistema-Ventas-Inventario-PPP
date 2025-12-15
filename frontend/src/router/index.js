@@ -7,6 +7,7 @@ import Login from "../pages/Login.vue";
 import { useAuthStore } from "../store/authStore";
 import Dashboard from "../pages/Dashboard.vue";
 import Sales from "../pages/Sales.vue";
+import Movements from "../pages/Movements.vue";
 
 const routes = [
   {
@@ -18,6 +19,7 @@ const routes = [
       { path: "/sales-control", component: SalesManagement, meta: { requiresAuth: true, requiredRole: 'admin' } },
       { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true, requiredRole: 'admin' } },
       { path: "/sales", component: Sales, meta: { requiresAuth: true, requiredRole: 'admin' } },
+      { path: "/movements", component: Movements, meta: { requiresAuth: true, requiredRole: 'admin' } },
     ],
   },
   {

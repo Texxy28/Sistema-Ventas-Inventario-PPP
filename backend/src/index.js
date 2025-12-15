@@ -12,6 +12,7 @@ import ReportRouter from './routes/salesReportRouter.js';
 import InventoryReportRouter from './routes/inventoryReportRouter.js';
 import SupplierRouter from './routes/supplierRoutes.js';
 import { notFound } from './middleware/notFound.js';
+import MovementRouter from './routes/movementRoutes.js';
 
 dotenv.config();
 
@@ -34,6 +35,7 @@ app.use("/api/user", UserRouter)
 app.use("/api/report", ReportRouter)
 app.use("/api/inventoryReport", InventoryReportRouter)
 app.use("/api/supplier", SupplierRouter)
+app.use("/api/movement", MovementRouter)
 
 app.use(notFound);
 

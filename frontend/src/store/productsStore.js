@@ -1,5 +1,5 @@
 import { defineStore } from "pinia";
-import { addProduct, deleteProduct, getProducts, getProductsByCategory, updateProduct } from "../services/products";
+import { addProduct, deleteProduct, getProducts, getProductsByCategory, getProductsBySearchQuery, getProductsBySearchQueryAndCategory, updateProduct } from "../services/products";
 
 export const useProductStore = defineStore("products", {
   state: () => ({
@@ -73,5 +73,35 @@ export const useProductStore = defineStore("products", {
         this.loadingProducts = false;
       }
     },
+    async fetchProductsBySearch(searchTerm, page, limit) {
+      this.loadingProducts = true;
+      this.errorProducts = null;
+      try {
+        const response = await getProductsBySearchQuery(searchTerm, page, limit);
+        this.products = response.data.products;
+        this.totalPages = response.data.totalPages;
+        this.currentPage = response.data.currentPage;
+      } catch (err) {
+        this.errorProducts = "No se pudieron cargar los productos";
+        console.error(err);
+      } finally {
+        this.loadingProducts = false;
+      }
+    },
+    async fetchProductsBySearchAndCategory(searchTerm, categoryId, page, limit) {
+      this.loadingProducts = true;
+      this.errorProducts = null;
+      try {
+        const response = await getProductsBySearchQueryAndCategory(searchTerm, categoryId, page, limit);
+        this.products = response.data.products;
+        this.totalPages = response.data.totalPages;
+        this.currentPage = response.data.currentPage;
+      } catch (err) {
+        this.errorProducts = "No se pudieron cargar los productos";
+        console.error(err);
+      } finally {
+        this.loadingProducts = false;
+      }
+    }
   },
 });

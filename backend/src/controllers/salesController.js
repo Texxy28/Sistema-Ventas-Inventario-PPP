@@ -11,7 +11,7 @@ export const getAllSales = async (req, res) => {
 };
 
 export const getSalesList = async (req, res) => {
-    const page = parseInt(req.query.page) || 1;
+  const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
   const offset = (page - 1) * limit;
   try {
@@ -48,7 +48,6 @@ export const addSale = async (req, res) => {
     );
     const nuevaVenta = result.rows[0];
     const id_nuevaVenta = nuevaVenta.id_venta;
-
     for (const item of productos) {
       const { id_producto, nombre, cantidad, precio } = item;
       await client.query(
@@ -70,13 +69,11 @@ export const addSale = async (req, res) => {
     const resultCount = await client.query(
       `select count(*) as total from comprobantes where date(fecha_emision) = CURRENT_DATE`
     );
-
     const countToday = parseInt(resultCount.rows[0].total) + 1;
     const numeroComprobante = `B${new Date()
       .toISOString()
       .slice(0, 10)
       .replace(/-/g, "")}-${String(countToday).padStart(3, "0")}`;
-
     const comprobanteResult = await client.query(
       `insert into comprobantes (id_venta, numero_comprobante, tipo_comprobante, metodo_pago, monto_total)
        values ($1, $2, $3, $4, $5)
@@ -89,9 +86,7 @@ export const addSale = async (req, res) => {
         total,
       ]
     );
-
     const nuevoComprobanteId = comprobanteResult.rows[0].id_comprobante;
-
     await client.query("commit");
     res.status(201).json({
       message: "Venta registrada exitosamente",

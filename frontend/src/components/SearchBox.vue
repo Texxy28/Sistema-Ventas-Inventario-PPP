@@ -18,18 +18,21 @@ const emit = defineEmits(['search']);
 const searchQuery = ref('');
 let timeout = null;
 
-watch(searchQuery, (newQuery) => {
-    if (timeout) clearTimeout(timeout);
+const search = () => {
+    clearTimeout(timeout);
     timeout = setTimeout(() => {
-        emit('search', newQuery);
+        emit('search', searchQuery.value);
     }, props.delay);
-});
+};
 
 </script>
 
 <template>
-    <div class="flex items-center border border-[#B0B0AE] rounded-md px-3 py-1 gap-2">
-        <MagnifyingGlassIcon class="h-4 w-4"/>
-        <input v-model="searchQuery" :placeholder="placeholder" type="text" class="focus:outline-none"/>
+    <div class="flex flex-row items-center">
+        <div class="flex items-center border border-[#B0B0AE] rounded-md px-3 py-1 gap-2 mr-4">
+            <MagnifyingGlassIcon class="h-4 w-4" />
+            <input v-model="searchQuery" :placeholder="placeholder" type="text" class="focus:outline-none" />
+        </div>
+        <button @click="search" class="bg-[#8B5E3C] text-white px-4 py-2 rounded-md hover:bg-[#C8A785] transition cursor-pointer">Buscar</button>
     </div>
 </template>

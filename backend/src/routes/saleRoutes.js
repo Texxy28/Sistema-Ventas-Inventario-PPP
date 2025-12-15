@@ -4,7 +4,7 @@ import { permit, verifyToken } from '../middleware/verifyToken.js';
 
 const SaleRouter = express.Router();
 
-SaleRouter.get("/", verifyToken, permit('admin', 'vendedor'), getSalesList);
+SaleRouter.get("/", verifyToken, permit('admin'), getSalesList);
 SaleRouter.post("/", verifyToken, permit('admin', 'vendedor'), addSale);
 
 export default SaleRouter;

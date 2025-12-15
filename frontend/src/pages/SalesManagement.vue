@@ -2,7 +2,7 @@
 import { storeToRefs } from 'pinia';
 import SearchBox from '../components/SearchBox.vue';
 import { useProductStore } from '../store/productsStore';
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import SaleDetails from '../components/SaleDetails.vue';
 import { useSaleStore } from '../store/salesStore';
 import VoucherModal from '../components/VoucherModal.vue';
@@ -18,7 +18,7 @@ const authStore = useAuthStore();
 const { products, currentPage, totalPages, loadingProducts, errorProducts } = storeToRefs(productStore);
 const { categories, loadingCategories, errorCategories } = storeToRefs(categoryStore);
 const { user } = storeToRefs(authStore);
-const { fetchProducts } = productStore;
+const { fetchProducts, fetchProductsByCategory } = productStore;
 const { fetchCategories } = categoryStore;
 const { fetchUser } = authStore;
 
@@ -75,19 +75,66 @@ const handleFinalize = async ({ productos, total }) => {
 }
 
 const nextPage = () => {
-    if (currentPage.value < totalPages.value) {
-        fetchProducts(currentPage.value + 1)
+    if (currentPage.value >= totalPages.value) return;
+
+    const next = currentPage.value + 1;
+
+    if (!selectedCategoryFilter.value) {
+        fetchProducts(next);
+    } else {
+        fetchProductsByCategory(
+            selectedCategoryFilter.value.id_categoria,
+            next
+        );
     }
 }
 
 const prevPage = () => {
-    if (currentPage.value > 1) {
-        fetchProducts(currentPage.value - 1)
+    if (currentPage.value <= 1) return;
+
+    const prev = currentPage.value - 1;
+
+    if (!selectedCategoryFilter.value) {
+        fetchProducts(prev);
+    } else {
+        fetchProductsByCategory(
+            selectedCategoryFilter.value.id_categoria,
+            prev
+        );
     }
 }
 
+watch(selectedCategoryFilter, async (newValue) => {
+    if (!newValue) {
+        await fetchProducts();
+        return;
+    }
+    await fetchProductsByCategory(newValue.id_categoria)
+})
+
 const reload = async () => {
-    await fetchProducts(currentPage);
+    const page = currentPage.value;
+
+    if (!selectedCategoryFilter.value) {
+        await fetchProducts(page);
+    } else {
+        await fetchProductsByCategory(
+            selectedCategoryFilter.value.id_categoria,
+            page
+        );
+    }
+
+    if (products.value.length === 0 && page > 1) {
+        if (!selectedCategoryFilter.value) {
+            fetchProducts(1);
+        } else {
+            fetchProductsByCategory(
+                selectedCategoryFilter.value.id_categoria,
+                1
+            );
+        }
+    }
+
     await fetchCategories();
 }
 
@@ -103,43 +150,46 @@ onMounted(async () => {
         <div class="col-span-2 p-6">
             <div class=" flex flex-row items-center justify-between">
                 <h1 class="text-2xl font-bold mb-4">Gestión de Ventas</h1>
-                <div class="flex flex-row gap-2">
+                <div class="flex flex-row gap-2 items-center">
                     <ArrowPathIcon class="w-8 h-8 bg-[#ECEAE5] p-1 rounded-md cursor-pointer" @click="reload" />
                     <SearchBox class="self-end" placeholder="Buscar productos..." @search="handleSearch" />
                 </div>
             </div>
-            <div v-if="loadingProducts">
-                <div class="h-[80vh] w-full flex gap-2 items-center justify-center">
-                    <ArrowPathIcon class="w-8 h-8 text-[#2E2B26] animate-spin" />
-                    <span class="text-[#2E2B26] text-lg">Cargando...</span>
-                </div>
-            </div>
-            <div v-if="products.length && !loadingProducts">
-                <div class="flex items-center justify-center">
-                    <CategoriesFilter :categories="categories" @selection="selectCategoryFilter"
-                        :selectedCategory="selectedCategoryFilter" />
-                </div>
-                <div class="flex-1 flex flex-col max-h-[70vh] relative overflow-hidden">
-                    <div class="flex-1 overflow-y-auto min-h-[60vh]">
-                        <ProductList :products="filteredProducts" mode="sales" @selection="handleSelection"
-                            :selectedProducts="selectedProducts" />
+            <div>
+                <div v-if="categories.length && !loadingCategories"  class="flex items-center justify-center">
+                        <CategoriesFilter :categories="categories" @selection="selectCategoryFilter"
+                            :selectedCategory="selectedCategoryFilter" />
                     </div>
-                    <div v-if="errorProducts">{{ errorProducts }}</div>
-                    <div class="w-full flex justify-center items-center sticky bottom-0 gap-4 py-4">
-                        <div>
-                            <ChevronLeftIcon class="h-8 w-8 cursor-pointer" @click="prevPage" />
+                <div v-if="loadingProducts">
+                    <div class="h-[80vh] w-full flex gap-2 items-center justify-center">
+                        <ArrowPathIcon class="w-8 h-8 text-[#2E2B26] animate-spin" />
+                        <span class="text-[#2E2B26] text-lg">Cargando...</span>
+                    </div>
+                </div>
+                <div v-if="products.length && !loadingProducts">
+                    
+                    <div class="flex-1 flex flex-col max-h-[70vh] relative overflow-hidden">
+                        <div class="flex-1 overflow-y-auto min-h-[60vh]">
+                            <ProductList :products="filteredProducts" mode="sales" @selection="handleSelection"
+                                :selectedProducts="selectedProducts" />
                         </div>
-                        <div>
-                            <span>Página {{ currentPage }} de {{ totalPages }}</span>
-                        </div>
-                        <div>
-                            <ChevronRightIcon class="h-8 w-8 cursor-pointer" @click="nextPage" />
+                        <div v-if="errorProducts">{{ errorProducts }}</div>
+                        <div class="w-full flex justify-center items-center sticky bottom-0 gap-4 py-4">
+                            <div>
+                                <ChevronLeftIcon class="h-8 w-8 cursor-pointer" @click="prevPage" />
+                            </div>
+                            <div>
+                                <span>Página {{ currentPage }} de {{ totalPages }}</span>
+                            </div>
+                            <div>
+                                <ChevronRightIcon class="h-8 w-8 cursor-pointer" @click="nextPage" />
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="col-span-1 p-6 h-full">
+        <div class="col-span-1 p-6 h-full max-h-[85vh]">
             <SaleDetails :selectedProducts="selectedProducts" @clear="handleClear" @finalize="handleFinalize" />
         </div>
 
