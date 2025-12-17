@@ -35,7 +35,6 @@ export const getAllProducts = async (req, res) => {
 
 export const addProduct = async (req, res) => {
   const {
-    codigo,
     nombre,
     autor,
     descripcion,
@@ -46,13 +45,14 @@ export const addProduct = async (req, res) => {
     punto_reorden,
     usuario_responsable,
   } = req.body;
+  const client = await pool.connect();
   try {
-    const result = await pool.query(
+    await client.query("BEGIN");
+    const insertResult = await client.query(
       `insert into productos 
-      (codigo, nombre, autor, descripcion, id_categoria, id_proveedor, precio, stock, punto_reorden) 
-      values ($1,$2,$3,$4,$5,$6,$7,$8,$9) returning *`,
+      (nombre, autor, descripcion, id_categoria, id_proveedor, precio, stock, punto_reorden) 
+      values ($1,$2,$3,$4,$5,$6,$7,$8) returning *`,
       [
-        codigo,
         nombre,
         autor || null,
         descripcion,
@@ -64,14 +64,21 @@ export const addProduct = async (req, res) => {
       ]
     );
 
-    const nuevoProducto = result.rows[0];
+    const idProducto = insertResult.rows[0].id_producto;
+
+    const codigoGenerado = `P-${String(idProducto).padStart(3, "0")}`;
+
+    await client.query(
+      `update productos set codigo = $1 where id_producto = $2`,
+      [codigoGenerado, idProducto]
+    );
 
     if (stock > 0) {
-      await pool.query(
-        `insert into movimientos_inventario 
-          (id_producto, tipo_movimiento, cantidad, usuario_responsable, nota)
-         values ($1, 'entrada', $2, $3, 'Ingreso inicial de stock')`,
-        [nuevoProducto.id_producto, stock, usuario_responsable || null]
+      await client.query(
+        `insert into movimientos_inventario
+        (id_producto, tipo_movimiento, cantidad, usuario_responsable, nota)
+        values ($1, 'entrada', $2, $3, 'Ingreso inicial de stock')`,
+        [idProducto, stock, usuario_responsable || null]
       );
     }
 
@@ -85,15 +92,20 @@ export const addProduct = async (req, res) => {
       left join categorias c on p.id_categoria = c.id_categoria 
       left join proveedores pr on p.id_proveedor = pr.id_proveedor
       where p.id_producto = $1`,
-      [nuevoProducto.id_producto]
+      [idProducto]
     );
+
+    await client.query("COMMIT");
 
     res
       .status(201)
       .json({ message: "Producto añadido", producto: detalles.rows[0] });
   } catch (err) {
+    await client.query("ROLLBACK");
     console.error("Error al añadir producto", err);
     res.status(500).json({ error: "Error en el servidor" });
+  } finally {
+    client.release();
   }
 };
 

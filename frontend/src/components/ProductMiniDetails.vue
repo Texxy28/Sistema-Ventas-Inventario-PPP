@@ -42,7 +42,7 @@ const emit = defineEmits(['edit', 'delete', 'select']);
                 <TrashIcon @click="emit('delete', product.id_producto)"
                     class="h-8 w-8 cursor-pointer absolute right-2 bottom-2" />
             </div>
-            <div v-else>
+            <div v-if="mode === 'sales'">
                 <input type="checkbox" @change="emit('select', $event.target.checked)" :checked="selected"
                     class="absolute bottom-2 right-2 w-5 h-5" />
             </div>

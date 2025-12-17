@@ -1,5 +1,6 @@
 import pool from "../config/db.js";
 import PDFDocument from "pdfkit";
+import { formatDate } from "../utils/formatDate.js";
 
 export const getAllVouchers = async (req, res) => {
   try {
@@ -93,7 +94,7 @@ export const createDoc = async (req, res) => {
       .fillColor("#000")
       .text(`Comprobante N°: ${comprobante.numero_comprobante}`, 50, 140)
       .text(
-        `Fecha: ${new Date(comprobante.fecha_emision).toLocaleString('es-PE')}`,
+        `Fecha: ${formatDate(comprobante.fecha)}`,
         50,
         160
       )

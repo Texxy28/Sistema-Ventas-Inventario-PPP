@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import VoucherModal from './VoucherModal.vue';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline';
-
+import { formatDate } from '../utils/formDate';
 
 const props = defineProps({
     sales: {
@@ -36,7 +36,7 @@ const generateVoucher = (comprobante_id) => {
             <thead class="bg-[#2E2B26] border-b border-gray-300">
                 <tr>
                     <th class="px-4 py-2 text-left font-semibold text-white">Fecha</th>
-                    <th class="px-4 py-2 text-left font-semibold text-white">Usuario</th>
+                    <th class="px-4 py-2 text-left font-semibold text-white">Vendedor</th>
                     <th class="px-4 py-2 text-left font-semibold text-white">Total</th>
                     <th class="px-4 py-2 text-left font-semibold text-white">Estado</th>
                     <th class="px-4 py-2 text-left font-semibold text-white">Cargar comprobante</th>
@@ -45,7 +45,7 @@ const generateVoucher = (comprobante_id) => {
 
             <tbody>
                 <tr v-for="sale in sales" :key="sale.id_venta" class="border-b hover:bg-gray-50 transition">
-                    <td class="px-4 py-2">{{ sale.fecha }}</td>
+                    <td class="px-4 py-2">{{ formatDate(sale.fecha) }}</td>
                     <td class="px-4 py-2">{{ sale.vendedor }}</td>
                     <td class="px-4 py-2 font-medium">{{ sale.total }}</td>
                     <td class="px-4 py-2">

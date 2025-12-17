@@ -62,7 +62,7 @@ export const updateCategory = async (req, res) => {
   try {
     const result = await pool.query(
       `update categorias 
-      set nombre = $1,
+      set nombre = $1
       where id_categoria = $2 returning *`,
       [nombre || null, id]
     );
@@ -71,7 +71,7 @@ export const updateCategory = async (req, res) => {
     }
     const detalles = await pool.query(
       `select
-      c.id_categoria, c.nombre
+      c.id_categoria, c.nombre,
       count(p.id_producto) as total_productos
       from categorias c
       left join productos p on c.id_categoria = p.id_categoria

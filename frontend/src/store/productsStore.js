@@ -28,8 +28,7 @@ export const useProductStore = defineStore("products", {
     },
     async addProduct(newProduct) {
       try {
-        const res = await addProduct(newProduct);
-        this.products.push(res.data.producto);
+       await addProduct(newProduct);
       } catch (err) {
         this.errorProducts = "No se pudo agregar el producto";
         console.error(err);
@@ -37,11 +36,7 @@ export const useProductStore = defineStore("products", {
     },
     async updateProduct(id, updatedProduct) {
       try {
-        const res = await updateProduct(id, updatedProduct);
-        const index = this.products.findIndex((product) => product.id_producto === id);
-        if (index !== -1) {
-          this.products[index] = res.data.producto;
-        }
+        await updateProduct(id, updatedProduct);
       } catch (err) {
         this.errorProducts = "No se pudo actualizar el producto";
         console.error(err);

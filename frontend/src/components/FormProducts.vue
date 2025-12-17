@@ -23,7 +23,6 @@ const props = defineProps({
 const emit = defineEmits(['addProduct', 'editProduct', 'cancelEdit']);
 
 const formProduct = ref({
-    codigo: "",
     nombre: "",
     autor: "",
     descripcion: "",
@@ -36,7 +35,6 @@ const formProduct = ref({
 
 const cleanForm = () => {
     formProduct.value = {
-        codigo: "",
         nombre: "",
         autor: "",
         descripcion: "",
@@ -80,7 +78,6 @@ const handleCancel = () => {
 
     <div class="bg-[#ECEAE5] shadow-sm m-4 shadow-[#8B5E3C]/20 p-6 lg:p-4 rounded-lg w-96">
         <h2 class="text-[#2E2B26] text-lg font-bold mb-4">{{ props.selectedProduct ? "Editar Producto" : "Añadir producto" }}</h2>
-        <input v-model="formProduct.codigo" placeholder="Código" class="border border-[#B0B0AE] p-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40 w-full mb-2" />
         <input v-model="formProduct.nombre" placeholder="Nombre" class="border border-[#B0B0AE] p-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40 w-full mb-2" />
         <input v-model="formProduct.autor" placeholder="Autor" class="border border-[#B0B0AE] p-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40 w-full mb-2" />
         <input v-model="formProduct.descripcion" placeholder="Descripcion" class="border border-[#B0B0AE] p-2 focus:outline-none focus:ring-2 focus:ring-[#8B5E3C]/40 w-full mb-2" />

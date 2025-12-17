@@ -10,6 +10,7 @@ import CategoriesFilter from '../components/CategoriesFilter.vue';
 import { ArrowPathIcon, ChevronLeftIcon, ChevronRightIcon, ClipboardDocumentListIcon, XMarkIcon } from '@heroicons/vue/24/outline';
 import { useSupplierStore } from '../store/suppliersStore';
 import ErrorModal from '../components/ErrorModal.vue';
+import { useAuthStore } from '../store/authStore';
 
 const productStore = useProductStore();
 const categoryStore = useCategoryStore();
@@ -20,6 +21,10 @@ const { suppliers, loadingSuppliers, errorSuppliers } = storeToRefs(supplierStor
 const { fetchProducts, fetchProductsByCategory, fetchProductsBySearch, fetchProductsBySearchAndCategory, updateProduct, addProduct } = productStore;
 const { fetchCategories } = categoryStore;
 const { fetchSuppliers } = supplierStore;
+
+const authStore = useAuthStore();
+const { user } = storeToRefs(authStore);
+const { fetchUser } = authStore;
 
 const selectedProduct = ref(null);
 const selectedCategoryFilter = ref(null);
@@ -146,7 +151,10 @@ onMounted(async () => {
         fetchProducts(),
         fetchCategories(),
         fetchSuppliers()
-    ])
+    ]);
+    if (!user) {
+        await fetchUser();
+    }
 })
 
 </script>
@@ -161,15 +169,13 @@ onMounted(async () => {
                     @editProduct="saveEdit" @cancelEdit="selectedProduct = null" />
             </div>
             <div class="col-span-3 mt-4">
-                <div class="flex flex-row justify-between items-center">
-                    <div class="flex flex-row gap-2 items-center">
-                        <ArrowPathIcon class="w-8 h-8 bg-[#ECEAE5] p-1 rounded-md cursor-pointer" @click="reload" />
-                        <SearchBox class="self-end" placeholder="Buscar productos..." @search="handleSearch" />
-                    </div>
+                <div class="flex flex-row gap-2 justify-between items-center">
+                    <ArrowPathIcon class="w-8 h-8 bg-[#ECEAE5] p-1 rounded-md cursor-pointer" @click="reload" />
+                    <SearchBox class="self-end" placeholder="Buscar productos..." @search="handleSearch" />
                     <ClipboardDocumentListIcon class="lg:hidden w-8 h-8 cursor-pointer" @click="toogleForm" />
                 </div>
                 <div v-if="errorProducts" class="">
-                    <ErrorModal :visible=errorProducts :error="errorProducts" @close="errorProducts = null" />
+                    <ErrorModal :visible=!!errorProducts :error="errorProducts" @close="errorProducts = null" />
                 </div>
                 <div>
                     <div v-if="categories.length && !loadingCategories" class="flex items-center justify-center">
@@ -186,7 +192,7 @@ onMounted(async () => {
                         <div>
                             <div class="flex-1 flex flex-col max-h-[70vh] relative overflow-hidden">
                                 <div class="flex-1 overflow-y-auto min-h-[60vh]">
-                                    <ProductList :products="products" @edit="selectProduct" mode="admin" />
+                                    <ProductList :products="products" @edit="selectProduct" :mode="user?.rol" />
                                 </div>
                                 <div class="w-full flex justify-center items-center sticky bottom-0 gap-4 py-4">
                                     <div>

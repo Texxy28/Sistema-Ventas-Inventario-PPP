@@ -8,18 +8,48 @@ import { useAuthStore } from "../store/authStore";
 import Dashboard from "../pages/Dashboard.vue";
 import Sales from "../pages/Sales.vue";
 import Movements from "../pages/Movements.vue";
+import Users from "../pages/Users.vue";
 
 const routes = [
   {
     path: "/",
     component: GeneralLayout,
     children: [
-      { path: "/productos", component: Products, meta: { requiresAuth: true, requiredRole: 'vendedor' } },
-      { path: "/categories", component: Categories, meta: { requiresAuth: true, requiredRole: 'admin' } },
-      { path: "/sales-control", component: SalesManagement, meta: { requiresAuth: true, requiredRole: 'admin' } },
-      { path: "/dashboard", component: Dashboard, meta: { requiresAuth: true, requiredRole: 'admin' } },
-      { path: "/sales", component: Sales, meta: { requiresAuth: true, requiredRole: 'admin' } },
-      { path: "/movements", component: Movements, meta: { requiresAuth: true, requiredRole: 'admin' } },
+      {
+        path: "/productos",
+        component: Products,
+        meta: { requiresAuth: true, requiredRole: ["admin", "vendedor"] },
+      },
+      {
+        path: "/categories",
+        component: Categories,
+        meta: { requiresAuth: true, requiredRole: "admin" },
+      },
+      {
+        path: "/sales-control",
+        component: SalesManagement,
+        meta: { requiresAuth: true, requiredRole: ["admin", "vendedor"] },
+      },
+      {
+        path: "/dashboard",
+        component: Dashboard,
+        meta: { requiresAuth: true, requiredRole: "admin" },
+      },
+      {
+        path: "/sales",
+        component: Sales,
+        meta: { requiresAuth: true, requiredRole: "admin" },
+      },
+      {
+        path: "/movements",
+        component: Movements,
+        meta: { requiresAuth: true, requiredRole: "admin" },
+      },
+      {
+        path: "/users",
+        component: Users,
+        meta: { requiresAuth: true, requiredRole: "admin" },
+      },
     ],
   },
   {
@@ -34,13 +64,20 @@ const router = createRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-  const authStore = useAuthStore();
-  if (!authStore.user) await authStore.fetchUser();
   const requiresAuth = to.meta.requiresAuth;
-  const requiredRole = to.meta.requiresRole;
+  const requiredRole = to.meta.requiredRole;
 
-  if (requiresAuth && !authStore.user) return next('/login');
-  if (requiredRole && authStore.user?.rol !== requiredRole) return next('/');
+  const authStore = useAuthStore();
+
+  if (!requiredRole) { return next(); }
+
+  if (!authStore.user) await authStore.fetchUser();
+
+  if (requiresAuth && !authStore.user) return next("/login");
+
+  if (requiredRole && !requiredRole.includes(authStore.user?.rol)) {
+    return next(from.fullPath);
+  }
   next();
 });
 

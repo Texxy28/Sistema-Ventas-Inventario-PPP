@@ -29,7 +29,8 @@ const props = defineProps({
                         <th class="px-4 py-2 text-left font-semibold text-white">Producto</th>
                         <th class="px-4 py-2 text-left font-semibold text-white">Usuario</th>
                         <th class="px-4 py-2 text-left font-semibold text-white">Cantidad</th>
-                        <th class="px-4 py-2 text-left font-semibold text-white">Fecha</th>
+                        <th class="px-4 py-2 text-left font-semibold text-white">Tipo de Movimiento</th>
+                        <!-- <th class="px-4 py-2 text-left font-semibold text-white">Fecha</th> -->
                     </tr>
                 </thead>
 
@@ -39,7 +40,8 @@ const props = defineProps({
                         <td class="px-4 py-2">{{ movement.producto }}</td>
                         <td class="px-4 py-2">{{ movement.vendedor }}</td>
                         <td class="px-4 py-2 font-medium">{{ movement.cantidad }}</td>
-                        <td class="px-4 py-2">{{ movement.fecha_movimiento }}</td>
+                        <td class="px-4 py-2 font-medium">{{ movement.tipo_movimiento }}</td>
+                        <!-- <td class="px-4 py-2">{{ movement.fecha_movimiento }}</td> -->
                     </tr>
                 </tbody>
             </table>
@@ -64,11 +66,16 @@ const props = defineProps({
                 </div>
 
                 <div class="flex justify-between text-sm mt-1">
+                    <span class="text-gray-500">Tipo de Movimiento</span>
+                    <span class="font-medium">{{ movement.tipo_movimiento }}</span>
+                </div>
+
+                <!-- <div class="flex justify-between text-sm mt-1">
                     <span class="text-gray-500">Fecha</span>
                     <span class="font-medium">
                         {{ movement.fecha_movimiento }}
                     </span>
-                </div>
+                </div> -->
             </div>
         </div>
 

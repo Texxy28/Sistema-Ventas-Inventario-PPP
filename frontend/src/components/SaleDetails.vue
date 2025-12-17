@@ -32,10 +32,10 @@ const handleFinalize = () => {
 
 <template>
     <div class="bg-[#ECEAE5] shadow-sm shadow-[#8B5E3C]/20 flex flex-col h-full p-4 gap-4">
-        <div>
+        <!-- <div>
             <h2 class="text-xl font-bold mb-2">Informacion del cliente</h2>
             <input type="text" class="p-2 w-full rounded" placeholder="Nombre" />
-        </div>
+        </div> -->
         <div class="flex flex-col flex-grow gap-4">
             <div class="flex flex-col flex-grow">
                 <h1 class="text-lg font-semibold p-2 border-b">Detalles de venta</h1>
