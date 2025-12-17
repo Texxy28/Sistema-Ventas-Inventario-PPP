@@ -38,7 +38,8 @@ const selectProduct = async (product) => {
 }
 
 const saveEdit = async (product) => {
-    await updateProduct(product.id_producto, product);
+    const updateData = { ...product, usuario_responsable: user.value.id_usuario };
+     await updateProduct(product.id_producto, updateData);  
     selectedProduct.value = null;
     openForm.value = false;
 };

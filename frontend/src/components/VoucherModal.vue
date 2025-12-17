@@ -1,6 +1,8 @@
 <script setup>
 import { XMarkIcon } from '@heroicons/vue/24/outline';
+import { computed } from 'vue';
 
+const API_URL = import.meta.env.VITE_API_URL;
 
 const props = defineProps({
     visible: {
@@ -16,8 +18,15 @@ const props = defineProps({
 const emit = defineEmits(['close']);
 
 const closeModal = () => {
-  emit('close');
+    emit('close');
 };
+
+console.log(`${API_URL}/api/voucher/pdf/${props.comprobante_id}`);
+
+const iframeSrc = computed(() => {
+    if (!props.comprobante_id) return "";
+    return `${API_URL}/api/voucher/pdf/${props.comprobante_id}`;
+});
 
 </script>
 
@@ -26,9 +35,9 @@ const closeModal = () => {
         <div class="bg-white rounded-lg w-[90%] h-[90%] shadow-xl flex flex-col">
             <div class="flex justify-between items-center p-4 border-b">
                 <h2 class="text-lg font-semibold">Comprobante de Venta</h2>
-                <XMarkIcon @click="closeModal" class="w-8 h-8 cursor-pointer"/>
+                <XMarkIcon @click="closeModal" class="w-8 h-8 cursor-pointer" />
             </div>
-            <iframe :src="`http://localhost:5000/api/voucher/pdf/${comprobante_id}`" class="flex-1 w-full"></iframe>
+            <iframe :src="iframeSrc" class="flex-1 w-full"></iframe>
         </div>
     </div>
 </template>
