@@ -8,5 +8,5 @@
       vue(),
       tailwindcss()
     ],
-    base: "/"
+    base: "/productos"
   })
