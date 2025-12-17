@@ -162,8 +162,12 @@ onMounted(async () => {
 
 <template>
     <div>
-        <div class="p-6 grid grid-cols-3 lg:grid-cols-4">
-            <div class="hidden lg:flex justify-center col-span-1 max-h-[80vh]">
+        <div class="p-6 grid grid-cols-3 lg:grid-cols-4"
+            :style="
+                user?.rol === 'admin' ? 'grid-template-columns: repeat(4, minmax(0, 1fr));' : 'grid-template-columns: repeat(3, minmax(0, 1fr));'
+            "
+        >
+            <div v-if="user?.rol === 'admin'" class="hidden lg:flex justify-center col-span-1 max-h-[80vh]">
                 <FormProducts :selectedProduct="selectedProduct" :loadingCategories="loadingCategories"
                     :errorCategories="errorCategories" :categories="categories" :loadingSuppliers="loadingSuppliers"
                     :errorSuppliers="errorSuppliers" :suppliers="suppliers" @addProduct="handleAddProduct"
@@ -173,7 +177,7 @@ onMounted(async () => {
                 <div class="flex flex-row gap-2 justify-between items-center">
                     <ArrowPathIcon class="w-8 h-8 bg-[#ECEAE5] p-1 rounded-md cursor-pointer" @click="reload" />
                     <SearchBox class="self-end" placeholder="Buscar productos..." @search="handleSearch" />
-                    <ClipboardDocumentListIcon class="lg:hidden w-8 h-8 cursor-pointer" @click="toogleForm" />
+                    <ClipboardDocumentListIcon v-if="user?.rol === 'admin'" class="lg:hidden w-8 h-8 cursor-pointer" @click="toogleForm" />
                 </div>
                 <div v-if="errorProducts" class="">
                     <ErrorModal :visible=!!errorProducts :error="errorProducts" @close="errorProducts = null" />
@@ -214,7 +218,7 @@ onMounted(async () => {
         </div>
 
         <transition name="slide-fade">
-            <div v-if="openForm" class="fixed lg:hidden inset-0 bg-black/50 z-[1000] flex justify-center items-center">
+            <div v-if="openForm && user?.rol === 'admin'" class="fixed lg:hidden inset-0 bg-black/50 z-[1000] flex justify-center items-center">
                 <div class="relative overflow-y-auto">
                     <FormProducts :selectedProduct="selectedProduct" :loadingCategories="loadingCategories"
                         :errorCategories="errorCategories" :categories="categories" :loadingSuppliers="loadingSuppliers"
